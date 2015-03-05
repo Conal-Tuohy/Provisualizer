@@ -1,8 +1,27 @@
-
-
-
-input {
+form {
 	position: absolute;
+	left: 0;
+	top: 0;
+	width: auto;
+	
+	font-family: sans-serif;
+	background-color: #F0F0F7;
+	border: 1px solid black;
+	padding: 10px;
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+}
+label {
+	margin-left: 5px;
+}
+input {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+input[type=text]
+{
+	height: 2em;
 }
 
 .link {
@@ -44,5 +63,9 @@ text.label.function {
 text.label.agency {
 	font-size: 12px;
 }
-
+#provisualizer {
+	position: relative;
+	padding: 0;
+	overflow: clip;
+}
 

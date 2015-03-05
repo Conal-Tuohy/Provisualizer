@@ -13,13 +13,6 @@ var provisualizer = d3.select("#provisualizer");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 
-
-
-
-addSearchForm();
-	
-
-	
 var force = d3.layout.force()
 	.size([width, height])
 	.charge(-400)
@@ -30,7 +23,8 @@ var force = d3.layout.force()
 var drag = force.drag()
 	.on("dragstart", dragstart);
 
-var svg = d3.select("#provisualizer").append("svg")
+addSearchForm();
+var svg = provisualizer.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%");
 	
@@ -104,8 +98,11 @@ function createFilteredGraphFromLinks() {
 	
 	agencyFunctionRelationships.forEach(
 		function(agencyFunctionRow) {
-			
-			if (matchesTextFilter(agencyFunctionRow.FUNCTION) || matchesTextFilter(agencyFunctionRow.AGENCY)) {
+			var agencyPeriod = nodeAttributesByNodeName[agencyFunctionRow.AGENCY].PERIOD;
+			if (
+				matchesDateFilter(agencyPeriod) &&
+				(matchesTextFilter(agencyFunctionRow.FUNCTION) || matchesTextFilter(agencyFunctionRow.AGENCY))
+			) {
 			
 				if (! (agencyFunctionRow.AGENCY in nodeIndicesByNodeName)) {
 					// no node with that name yet
@@ -270,12 +267,28 @@ function addSearchForm() {
 		searchPhrase = decodeURIComponent(fragment.substring(1));
 	}
 	var searchForm = provisualizer.append("form");
+	var labelSearch = searchForm.append("label")
+		.attr("id", "agency-or-function-name-label")
+		.attr("for", "agency-or-function-name-filter")
+		.text("Agency or function:");
 	var textSearch = searchForm.append("input")
 		.attr("id", "agency-or-function-name-filter")
 		.attr("type", "text")
-		.attr("width", "180px")
-		.attr("height", "80px")
+		.attr("size", "20")
 		.property("value", searchPhrase);
+	var yearLabel = searchForm.append("label")
+		.attr("id", "year-label")
+		.attr("for", "year-filter")
+		.text("Year:");
+	var yearSearch = searchForm.append("input")
+		.attr("id", "year-filter")
+		.attr("type", "text")
+		.attr("size", "4")
+		.attr("maxlength", "4");
+	var submitButton = searchForm.append("input")
+		.attr("id", "submit")
+		.attr("type", "submit")
+		.property("value", "Search");
 		
 	searchForm
 		.on(
@@ -287,9 +300,55 @@ function addSearchForm() {
 				window.location.hash = "#" + encodeURIComponent(textSearch.property("value"));
 			}
 		);
+	return searchForm;
 }
 
 function matchesTextFilter(text) {
 	var textFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
 	return text.toUpperCase().indexOf(textFilter) != -1
+}
+
+function matchesDateFilter(period) {
+	var yearFilterText = d3.select('#year-filter').property("value");
+	if (yearFilterText == "") {
+		return true; // all records match a blank year filter
+	}
+	
+	/* Example date ranges and their interpretations:
+	
+	ND-1851				x <= 1851
+	c 1976-ct				1976 <= x <= current year
+	c 1886-1905			1886 <= x <= 1905
+	by 1921-by 1921		1921 <= x <= 1921 (i.e. x=1921)
+	2010-2013 			2010 <= x <= 2013
+	1987-by 2002			1987 <= x <= 2002
+	1981-1981 - 1988	1981 <= x <= 1988
+	1936-? 1994 			1936 <= x <= 1994
+	? 1869-ct 				1869 <= x <= current year
+	*/
+	/* parsing date ranges:
+	discard all chars not in "-0123456789"
+	first date is text before "-"
+	last date is text after final "-"
+	if first date is blank, set it to "1770" (the year of Cook's first visit to Australia)
+	if last date is blank, set it to the current year
+	*/
+	var cleanPeriod = period.replace(/[^-\d]*/g, "");
+	var startYearGiven = cleanPeriod.substr(0, cleanPeriod.indexOf("-"));
+	var endYearGiven = cleanPeriod.substr(1 + cleanPeriod.lastIndexOf("-"));
+	var startYear, endYear;
+	if (startYearGiven == "") {
+		startYear = 1770;
+	} else {
+		startYear = Number(startYearGiven);
+	}
+	if (endYearGiven == "") {
+		endYear = new Date().getFullYear();
+	} else {
+		endYear = Number(endYearGiven);
+	}	
+	console.log(period, cleanPeriod, startYear, endYear);
+	var yearFilter = Number(yearFilterText);
+
+	return (startYear <= yearFilter) && (endYear >= yearFilter);
 }
