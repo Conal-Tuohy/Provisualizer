@@ -95,7 +95,6 @@ function jump(d) {
 
 function createFilteredGraphFromLinks() {
 	// Extract the distinct nodes from the node relationship table.
-	var nameFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
 	
 	// arrays containing the node objects, and the link objects, for D3 force layout
 	var nodes = [];
@@ -106,7 +105,7 @@ function createFilteredGraphFromLinks() {
 	agencyFunctionRelationships.forEach(
 		function(agencyFunctionRow) {
 			
-			if (agencyFunctionRow.FUNCTION.toUpperCase().indexOf(nameFilter) != -1 || agencyFunctionRow.AGENCY.toUpperCase().indexOf(nameFilter) != -1) {
+			if (matchesTextFilter(agencyFunctionRow.FUNCTION) || matchesTextFilter(agencyFunctionRow.AGENCY)) {
 			
 				if (! (agencyFunctionRow.AGENCY in nodeIndicesByNodeName)) {
 					// no node with that name yet
@@ -288,4 +287,9 @@ function addSearchForm() {
 				window.location.hash = "#" + encodeURIComponent(textSearch.property("value"));
 			}
 		);
+}
+
+function matchesTextFilter(text) {
+	var textFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
+	return text.toUpperCase().indexOf(textFilter) != -1
 }
