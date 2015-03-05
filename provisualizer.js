@@ -49,7 +49,7 @@ d3.csv(
 			}
 		);
 		// Now these node attributes can be read below
-		// Note: the "FUNCTION" columns is misnamed because it includes both functions AND agencies
+		// Note: the "FUNCTION" column is misnamed because it includes both functions AND agencies; it should be NODE.
 		// Also the table should really have included a TYPE column to specify "function" or "agency"
 		d3.csv(
 			baseUrl + "data/agency-functions.csv", 
@@ -261,10 +261,20 @@ function addNodeLabel(node, nodes, links) {
 function addSearchForm() {
 	// search for the word specified in the URL fragment identifier 
 	var searchPhrase = "road";
+	var searchYear = "";
 	var fragment = window.location.hash;
 	if (fragment) {
 		// trim the leading # and decode the fragment identifier
-		searchPhrase = decodeURIComponent(fragment.substring(1));
+		var query = decodeURIComponent(fragment.substring(1));
+		var delimiter = query.indexOf("\n");
+		if (delimiter != -1) {
+			// contains a phrase AND a year
+			searchPhrase = query.substring(0, delimiter);
+			searchYear = query.substring(delimiter + 1);
+		} else {
+			// just a phrase
+			searchPhrase = query;
+		}
 	}
 	var searchForm = provisualizer.append("form");
 	var labelSearch = searchForm.append("label")
@@ -284,7 +294,8 @@ function addSearchForm() {
 		.attr("id", "year-filter")
 		.attr("type", "text")
 		.attr("size", "4")
-		.attr("maxlength", "4");
+		.attr("maxlength", "4")
+		.property("value", searchYear);
 	var submitButton = searchForm.append("input")
 		.attr("id", "submit")
 		.attr("type", "submit")
@@ -297,7 +308,13 @@ function addSearchForm() {
 				// this event is now handled
 				d3.event.preventDefault();
 				createFilteredGraphFromLinks();
-				window.location.hash = "#" + encodeURIComponent(textSearch.property("value"));
+				searchPhrase = textSearch.property("value");
+				searchYear = yearSearch.property("value");
+				if (searchYear == "") {
+					window.location.hash = "#" + encodeURIComponent(searchPhrase);
+				} else {
+					window.location.hash = "#" + encodeURIComponent(searchPhrase + "\n" + searchYear);
+				}
 			}
 		);
 	return searchForm;
