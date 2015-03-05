@@ -22,24 +22,7 @@ if (fragment) {
 	searchPhrase = decodeURIComponent(fragment.substring(1));
 }
 
-var searchForm = provisualizer.append("form");
-var textSearch = searchForm.append("input")
-	.attr("type", "text")
-	.attr("width", "180px")
-	.attr("height", "80px")
-	.property("value", searchPhrase);
-	
-searchForm
-	.on(
-		"submit", 
-		function(d, i) {
-			// this event is now handled
-			d3.event.preventDefault();
-			createFilteredGraphFromLinks();
-			window.location.hash = "#" + encodeURIComponent(textSearch.property("value"));
-		}
-	);
-
+addSearchForm();
 	
 
 	
@@ -118,7 +101,7 @@ function jump(d) {
 
 function createFilteredGraphFromLinks() {
 	// Extract the distinct nodes from the node relationship table.
-	var nameFilter = textSearch.property("value").toUpperCase();
+	var nameFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
 	
 	// arrays containing the node objects, and the link objects, for D3 force layout
 	var nodes = [];
@@ -283,4 +266,25 @@ function addNodeLabel(node, nodes, links) {
 			target: nodes[nodeIndex]
 		}
 	)
+}
+
+function addSearchForm() {
+	var searchForm = provisualizer.append("form");
+	var textSearch = searchForm.append("input")
+		.attr("id", "agency-or-function-name-filter")
+		.attr("type", "text")
+		.attr("width", "180px")
+		.attr("height", "80px")
+		.property("value", searchPhrase);
+		
+	searchForm
+		.on(
+			"submit", 
+			function(d, i) {
+				// this event is now handled
+				d3.event.preventDefault();
+				createFilteredGraphFromLinks();
+				window.location.hash = "#" + encodeURIComponent(textSearch.property("value"));
+			}
+		);
 }
