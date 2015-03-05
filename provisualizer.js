@@ -38,11 +38,29 @@ var svg = provisualizer.append("svg")
 
 	// map from node names to node attributes
 	var nodeAttributesByNodeName = {};
+	
+	// list of function names
+	var functionNames = [];
+	var uniqueFunctionNames = {};
 		
 d3.csv(
 	baseUrl + "data/nodes.csv", 
 	function(error, nodeAttributes) {
-
+		nodeAttributes.forEach(
+			function(nodeAttributeSet) {
+				if (nodeAttributeSet.FUNCTION.substr(0, 2) == "VF") {
+					// then it is a function, not an agency
+					functionNames.push(nodeAttributeSet.FUNCTION);
+				}
+			}
+		);
+		functionNames.sort(functionNameComparator); // so that the list box of functions is sorted
+		functionNames.forEach(
+			function(functionName) {
+				uniqueFunctionNames[functionName] = functionName;
+			}
+		);
+		populateFunctionDropDownList();
 		nodeAttributes.forEach(
 			function(nodeAttributeSet) {
 				nodeAttributesByNodeName[nodeAttributeSet.FUNCTION] = nodeAttributeSet; // though we don't really need to copy the FUNCTION column
@@ -60,6 +78,17 @@ d3.csv(
 		)
 	}
 );
+function functionNameComparator(a, b) {
+	if (functionNameExcludingCode(a) < functionNameExcludingCode(b)) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+function functionNameExcludingCode(functionNameWithCode) {
+	var n = functionNameWithCode.substr(3).indexOf(" ") + 4;
+	return functionNameWithCode.substr(n);
+}
 
 function tick() {
 	linkLines
@@ -266,7 +295,7 @@ function addSearchForm() {
 	if (fragment) {
 		// trim the leading # and decode the fragment identifier
 		var query = decodeURIComponent(fragment.substring(1));
-		var delimiter = query.indexOf("\n");
+		var delimiter = query.indexOf("_");
 		if (delimiter != -1) {
 			// contains a phrase AND a year
 			searchPhrase = query.substring(0, delimiter);
@@ -280,12 +309,28 @@ function addSearchForm() {
 	var labelSearch = searchForm.append("label")
 		.attr("id", "agency-or-function-name-label")
 		.attr("for", "agency-or-function-name-filter")
-		.text("Agency or function:");
+		.text("Enter agency or function name:");
 	var textSearch = searchForm.append("input")
 		.attr("id", "agency-or-function-name-filter")
 		.attr("type", "text")
 		.attr("size", "20")
 		.property("value", searchPhrase);
+	var functionListLabel = searchForm.append("label")
+		.attr("id", "function-list-label")
+		.attr("for", "function-list")
+		.text("... or select a function:");
+	var functionList = searchForm.append("select")
+		.attr("id", "function-list")
+		.on(
+			"change", 
+			function(d, i) {
+				// this event is now handled
+				d3.event.preventDefault();
+				textSearch.property("value", functionList.property("value"));
+				functionList.property("value", "(select)");
+				performSearch();
+			}
+		);		
 	var yearLabel = searchForm.append("label")
 		.attr("id", "year-label")
 		.attr("for", "year-filter")
@@ -307,14 +352,7 @@ function addSearchForm() {
 			function(d, i) {
 				// this event is now handled
 				d3.event.preventDefault();
-				createFilteredGraphFromLinks();
-				searchPhrase = textSearch.property("value");
-				searchYear = yearSearch.property("value");
-				if (searchYear == "") {
-					window.location.hash = "#" + encodeURIComponent(searchPhrase);
-				} else {
-					window.location.hash = "#" + encodeURIComponent(searchPhrase + "\n" + searchYear);
-				}
+				performSearch();
 			}
 		);
 	return searchForm;
@@ -364,8 +402,30 @@ function matchesDateFilter(period) {
 	} else {
 		endYear = Number(endYearGiven);
 	}	
-	console.log(period, cleanPeriod, startYear, endYear);
+	// console.log(period, cleanPeriod, startYear, endYear);
 	var yearFilter = Number(yearFilterText);
 
 	return (startYear <= yearFilter) && (endYear >= yearFilter);
 }
+
+function populateFunctionDropDownList() {
+	var functionList = d3.select("#function-list");
+	functionList.append("option")
+		.text("(select)");
+	for(var functionName in uniqueFunctionNames) 
+		functionList.append("option")
+			.text(functionName);
+}
+
+function performSearch() {
+	createFilteredGraphFromLinks();
+	var textSearch = d3.select("#agency-or-function-name-filter");
+	var yearSearch = d3.select("#year-filter");
+	searchPhrase = textSearch.property("value");
+	searchYear = yearSearch.property("value");
+	if (searchYear == "") {
+		window.location.hash = "#" + encodeURIComponent(searchPhrase);
+	} else {
+		window.location.hash = "#" + encodeURIComponent(searchPhrase + "_" + searchYear);
+	}
+}	
