@@ -1,14 +1,23 @@
+var script = d3.select('#provisualizer-script').attr('src');
+var baseUrl = script.substring(0, script.lastIndexOf('provisualizer.js'));
+
+// add stylesheet
+var stylesheet = d3.select('head')
+	.append('link')
+		.attr('type', 'text/css')
+		.attr('rel', 'stylesheet')
+		.attr('href', baseUrl + 'provisualizer.css');
 
 var maxLabelLength = 30;
 var provisualizer = d3.select("#provisualizer");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 
+
 // search for the word specified in the URL fragment identifier 
 var searchPhrase = "road";
 var fragment = window.location.hash;
 if (fragment) {
-	console.warn(fragment);
 	// trim the leading # and decode the fragment identifier
 	searchPhrase = decodeURIComponent(fragment.substring(1));
 }
@@ -60,7 +69,7 @@ var svg = d3.select("#provisualizer").append("svg")
 	var nodeAttributesByNodeName = {};
 		
 d3.csv(
-	"data/nodes.csv", 
+	baseUrl + "data/nodes.csv", 
 	function(error, nodeAttributes) {
 
 		nodeAttributes.forEach(
@@ -72,7 +81,7 @@ d3.csv(
 		// Note: the "FUNCTION" columns is misnamed because it includes both functions AND agencies
 		// Also the table should really have included a TYPE column to specify "function" or "agency"
 		d3.csv(
-			"data/agency-functions.csv", 
+			baseUrl + "data/agency-functions.csv", 
 			function(error, agencyFunctionRelationshipsCSV) {
 				agencyFunctionRelationships = agencyFunctionRelationshipsCSV;
 				createFilteredGraphFromLinks();
