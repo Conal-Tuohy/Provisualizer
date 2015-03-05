@@ -14,13 +14,7 @@ var width = provisualizer.node().offsetWidth;
 var height = provisualizer.node().offsetHeight; 
 
 
-// search for the word specified in the URL fragment identifier 
-var searchPhrase = "road";
-var fragment = window.location.hash;
-if (fragment) {
-	// trim the leading # and decode the fragment identifier
-	searchPhrase = decodeURIComponent(fragment.substring(1));
-}
+
 
 addSearchForm();
 	
@@ -269,6 +263,13 @@ function addNodeLabel(node, nodes, links) {
 }
 
 function addSearchForm() {
+	// search for the word specified in the URL fragment identifier 
+	var searchPhrase = "road";
+	var fragment = window.location.hash;
+	if (fragment) {
+		// trim the leading # and decode the fragment identifier
+		searchPhrase = decodeURIComponent(fragment.substring(1));
+	}
 	var searchForm = provisualizer.append("form");
 	var textSearch = searchForm.append("input")
 		.attr("id", "agency-or-function-name-filter")
