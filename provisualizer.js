@@ -113,7 +113,7 @@ function dragstart(d) {
 }
 
 function jump(d) {
-	window.location = d.URL
+	window.open(d.URL, d.name);
 }
 
 function createFilteredGraphFromLinks() {
@@ -309,7 +309,7 @@ function addSearchForm() {
 	var labelSearch = searchForm.append("label")
 		.attr("id", "agency-or-function-name-label")
 		.attr("for", "agency-or-function-name-filter")
-		.text("Enter agency or function name:");
+		.text("Enter a keyword:");
 	var textSearch = searchForm.append("input")
 		.attr("id", "agency-or-function-name-filter")
 		.attr("type", "text")
