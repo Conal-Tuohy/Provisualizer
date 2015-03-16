@@ -1,7 +1,7 @@
 var script = d3.select('#provisualizer-script').attr('src');
 var baseUrl = script.substring(0, script.lastIndexOf('provisualizer.js'));
 
-// add stylesheet
+// add CSS stylesheet
 var stylesheet = d3.select('head')
 	.append('link')
 		.attr('type', 'text/css')
@@ -24,6 +24,7 @@ var drag = force.drag()
 	.on("dragstart", dragstart);
 
 addSearchForm();
+addSharingTools();
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%");
@@ -287,6 +288,79 @@ function addNodeLabel(node, nodes, links) {
 	)
 }
 
+function addSharingTools() {
+		var shareButton = provisualizer.append("img")
+			.attr("id", "share-button")
+			.attr("src", "share.png")
+			.attr("alt", "Share")
+			.attr("title", "Share")
+			.on("click", toggleSharingToolbox);
+			
+		var sharingToolbox = provisualizer.append("div")
+			.attr("id", "sharing-toolbox")
+			.classed("hidden", true);
+		// <a href="https://www.facebook.com/sharer/sharer.php?u={url}">Share on Facebook</a>
+		sharingToolbox.append("img")
+			.attr("id", "close-button")
+			.attr("src", "close.png")
+			.attr("alt", "Close")
+			.attr("title", "Close")
+			.on("click", hideSharingToolbox);
+			
+		sharingToolbox.append("h1")
+			.text("Share your search");
+		var shareList = sharingToolbox.append("ul")
+			.attr("class", "ss-share");
+			
+		addTool(shareList, "ico-facebook", "Facebook", shareOnFacebook);
+		addTool(shareList, "ico-twitter", "Twitter", shareOnTwitter);
+//		addTool(sharingToolbox, "Email", shareByEmail);
+		
+}
+
+function addTool(shareList, cssClass, name, eventHandler) {
+		var item = shareList.append("li")
+			.attr("class", "ss-share-item");
+		item.append("a")
+			.attr("class", "ss-share-link " + cssClass)
+			.on("click", eventHandler)
+			.text(name);
+}
+
+function shareOnFacebook() {
+	var search = d3.select('#agency-or-function-name-filter').property("value");
+	var URL = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location);
+	window.open(URL, "Share");
+	hideSharingToolbox();
+}
+function shareOnTwitter(d, i) {
+	var search = d3.select('#agency-or-function-name-filter').property("value");
+	var tweet = "Visualized '" + search + "' at @PRO_Vic: " + window.location;
+	var URL = "https://twitter.com/home?status=" + encodeURIComponent(tweet);
+	console.log(URL);
+	window.open(URL, "Share");
+	hideSharingToolbox();
+}
+function shareByEmail(d, i) {
+	var search = d3.select('#agency-or-function-name-filter').property("value");
+	var subject = "Visualization of '" + search + "'";
+	var message = "Check out this visualization of a search for '" + search + "' at PROV: <" + window.location + ">";
+	var URL = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
+	console.log(URL);
+	window.open(URL);
+	hideSharingToolbox();
+}
+function toggleSharingToolbox() {
+	var toolbox = d3.select("#sharing-toolbox");
+	toolbox.classed("hidden", !(toolbox.classed("hidden")));
+}
+function hideSharingToolbox() {
+	d3.select("#sharing-toolbox").classed("hidden", true);
+}
+function showSharingToolbox() {
+		d3.select("#sharing-toolbox").classed("hidden", false);
+}
+
 function addSearchForm() {
 	// search for the word specified in the URL fragment identifier 
 	var searchPhrase = "road";
@@ -305,7 +379,8 @@ function addSearchForm() {
 			searchPhrase = query;
 		}
 	}
-	var searchForm = provisualizer.append("form");
+	var toolBar = provisualizer.append("div");
+	var searchForm = toolBar.append("form");
 	var labelSearch = searchForm.append("label")
 		.attr("id", "agency-or-function-name-label")
 		.attr("for", "agency-or-function-name-filter")
@@ -355,6 +430,8 @@ function addSearchForm() {
 				performSearch();
 			}
 		);
+
+		
 	return searchForm;
 }
 
@@ -404,7 +481,6 @@ function matchesDateFilter(period) {
 	}	
 	// console.log(period, cleanPeriod, startYear, endYear);
 	var yearFilter = Number(yearFilterText);
-
 	return (startYear <= yearFilter) && (endYear >= yearFilter);
 }
 
