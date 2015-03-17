@@ -33,7 +33,9 @@ addEmbeddingGuide();
 
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
-	.attr("height", "100%");
+	.attr("height", "100%") 
+    		.call(d3.behavior.zoom().on("zoom", zoom))
+    	.append("g");
 	
 	
 	var linkLines = svg.selectAll(".link");
@@ -652,3 +654,10 @@ function getSearchFragment() {
 	}
 }
 	
+
+	
+	// zoom and pan
+	function zoom() {
+		svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+   	}
+
