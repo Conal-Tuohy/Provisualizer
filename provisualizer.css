@@ -1,20 +1,31 @@
+#provisualizer {
+	position: relative;
+	background-color: white;
+}
 #share-button {
-	position: fixed;
-	bottom: 5;
-	left: 5;
-}#close-button {
 	position: absolute;
-	top: 5;
-	right: 5;
+	cursor: pointer;
+	bottom: 5px;
+	left: 5px;
+}
+#close-button {
+	position: absolute;
+	cursor: pointer;
+	top: 5px;
+	right: 5px;
 }
 #full-screen-button {
 	position: fixed;
-	bottom: 5;
-	right: 5;
+	cursor: pointer;
+	bottom: 5px;
+	right: 5px;
 }
 
 .hidden {
 	display: none;
+}
+#provisualizer #sharing-toolbox h1 {
+	font-size: 12pt;
 }
 #provisualizer #sharing-toolbox {
   width: 20em;
@@ -127,6 +138,7 @@ list-style: none; }
 display: inline;
 margin-right: 1em; }
 .ss-share-link {
+	cursor: pointer;
 /* crude button styles */
 text-decoration: none;
 color: #444;

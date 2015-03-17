@@ -25,6 +25,7 @@ var drag = force.drag()
 
 addSearchForm();
 addSharingTools();
+addFullscreenButton();
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%");
@@ -288,10 +289,66 @@ function addNodeLabel(node, nodes, links) {
 	)
 }
 
+function addFullscreenButton() {
+	if (fullscreenEnabled()) {
+		var fullScreenButton = provisualizer.append("img")
+			.attr("id", "full-screen-button")
+			.attr("src", baseUrl + "fullscreen.png")
+			.attr("alt", "Full screen")
+			.attr("title", "Full screen")
+			.on("click", toggleFullscreen);
+	}
+}
+function toggleFullscreen() {
+	if (fullscreenElement() == null) {
+		goFullscreen(provisualizer.node());
+	} else {
+		exitFullscreen();
+	}
+}
+function fullscreenEnabled() {
+	return  document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
+}
+function fullscreenElement() {
+	if (document.fullscreenElement) {
+		return document.fullscreenElement;
+	} else if (document.mozFullScreenElement) {
+		return document.mozFullScreenElement;
+	} else if (document.webkitFullscreenElement) {
+		return document.webkitFullscreenElement;
+	} else if (document.msFullscreenElement) {
+		return document.msFullscreenElement;
+	} else {
+		return null;
+	}
+}
+function goFullscreen(element) {
+	if(element.requestFullscreen) {
+		element.requestFullscreen();
+	} else if(element.mozRequestFullScreen) {
+		element.mozRequestFullScreen();
+	} else if(element.webkitRequestFullscreen) {
+		element.webkitRequestFullscreen();
+	} else if(element.msRequestFullscreen) {
+		element.msRequestFullscreen();
+	}
+	d3.select("#full-screen-button").attr("title", "Exit full screen");
+}
+function exitFullscreen() {
+	if (document.exitFullscreen) {
+		document.exitFullscreen();
+	} else if (document.mozCancelFullScreen) {
+		document.mozCancelFullScreen();
+	} else if (document.webkitExitFullscreen) {
+		document.webkitExitFullscreen();
+	}
+	d3.select("#full-screen-button").attr("title", "Full screen");
+}
+
 function addSharingTools() {
 		var shareButton = provisualizer.append("img")
 			.attr("id", "share-button")
-			.attr("src", "share.png")
+			.attr("src", baseUrl + "share.png")
 			.attr("alt", "Share")
 			.attr("title", "Share")
 			.on("click", toggleSharingToolbox);
@@ -302,7 +359,7 @@ function addSharingTools() {
 		// <a href="https://www.facebook.com/sharer/sharer.php?u={url}">Share on Facebook</a>
 		sharingToolbox.append("img")
 			.attr("id", "close-button")
-			.attr("src", "close.png")
+			.attr("src", baseUrl + "close.png")
 			.attr("alt", "Close")
 			.attr("title", "Close")
 			.on("click", hideSharingToolbox);
