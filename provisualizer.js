@@ -1,5 +1,8 @@
 var script = d3.select('#provisualizer-script').attr('src');
 var baseUrl = script.substring(0, script.lastIndexOf('provisualizer.js'));
+if (baseUrl == "") {
+	baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + "/";
+}
 
 // add CSS stylesheet
 var stylesheet = d3.select('head')
@@ -26,6 +29,8 @@ var drag = force.drag()
 addSearchForm();
 addSharingTools();
 addFullscreenButton();
+addEmbeddingGuide();
+
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%");
@@ -358,7 +363,7 @@ function addSharingTools() {
 			.classed("hidden", true);
 		// <a href="https://www.facebook.com/sharer/sharer.php?u={url}">Share on Facebook</a>
 		sharingToolbox.append("img")
-			.attr("id", "close-button")
+			.attr("class", "close-button")
 			.attr("src", baseUrl + "close.png")
 			.attr("alt", "Close")
 			.attr("title", "Close")
@@ -371,8 +376,8 @@ function addSharingTools() {
 			
 		addTool(shareList, "ico-facebook", "Facebook", shareOnFacebook);
 		addTool(shareList, "ico-twitter", "Twitter", shareOnTwitter);
-//		addTool(sharingToolbox, "Email", shareByEmail);
-		
+		addTool(shareList, "ico-email", "Email", shareByEmail);
+		addTool(shareList, "ico-embed","Embed", shareByEmbedding);
 }
 
 function addTool(shareList, cssClass, name, eventHandler) {
@@ -390,7 +395,7 @@ function shareOnFacebook() {
 	window.open(URL, "Share");
 	hideSharingToolbox();
 }
-function shareOnTwitter(d, i) {
+function shareOnTwitter() {
 	var search = d3.select('#agency-or-function-name-filter').property("value");
 	var tweet = "Visualized '" + search + "' at @PRO_Vic: " + window.location;
 	var URL = "https://twitter.com/home?status=" + encodeURIComponent(tweet);
@@ -398,7 +403,7 @@ function shareOnTwitter(d, i) {
 	window.open(URL, "Share");
 	hideSharingToolbox();
 }
-function shareByEmail(d, i) {
+function shareByEmail() {
 	var search = d3.select('#agency-or-function-name-filter').property("value");
 	var subject = "Visualization of '" + search + "'";
 	var message = "Check out this visualization of a search for '" + search + "' at PROV: <" + window.location + ">";
@@ -406,6 +411,36 @@ function shareByEmail(d, i) {
 	console.log(URL);
 	window.open(URL);
 	hideSharingToolbox();
+}
+function shareByEmbedding() {
+	var embeddingGuide = d3.select("#embedding-guide").classed("hidden", false);
+	updateEmbeddingCode();
+	hideSharingToolbox();
+}
+function updateEmbeddingCode() {
+	/*
+	e.g.
+	<div id="provisualizer" style="width: 700px; height:900px; border: 1px solid black;">
+		<div id="embed-search">fish</div>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script id="provisualizer-script" src="http://conaltuohy.com/clients/prov/provisualizer/provisualizer.js"></script>
+	</div>
+	*/	
+	var embeddingCode = "<div id='provisualizer' style='width: "
+		+ d3.select("#embedding-width").property("value")
+		+ "px; height: "
+		+ d3.select("#embedding-height").property("value")
+		+ "px; border: 1px solid black;'>\n"
+		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
+		+ "   <script src='http://d3js.org/d3.v3.min.js'></script>\n"
+		+ "   <script src='" 
+		+ baseUrl 
+		+ "provisualizer.js'>\n"
+		+ "   </script>\n"
+		+ "</div>";
+	var embeddingCodeWidget = d3.select("#embedding-code");
+	embeddingCodeWidget.text(embeddingCode);
+	embeddingCodeWidget.node().setSelectionRange(0, embeddingCodeWidget.property("value").length);
 }
 function toggleSharingToolbox() {
 	var toolbox = d3.select("#sharing-toolbox");
@@ -418,14 +453,60 @@ function showSharingToolbox() {
 		d3.select("#sharing-toolbox").classed("hidden", false);
 }
 
+function addEmbeddingGuide() {
+	var embeddingGuide = provisualizer.append("div")
+		.attr("id", "embedding-guide")
+		.classed("hidden", "true");
+	embeddingGuide.append("h1").attr("id", "embedding-guide-heading");
+	embeddingGuide.append("img")
+			.attr("class", "close-button")
+			.attr("src", baseUrl + "close.png")
+			.attr("alt", "Close")
+			.attr("title", "Close")
+			.on("click", hideEmbeddingGuide);
+	embeddingGuide.append("p").text("Copy and paste this code into the website where you want to embed this visualization");
+	embeddingGuide.append("textarea").attr("id", "embedding-code");
+	embeddingGuide.append("input")
+		.attr("id", "embedding-width")
+		.attr("type", "text")
+		.attr("size", "4")
+		.attr("maxlength", "4")
+		.property("value", "800");
+	embeddingGuide.append("input")
+		.attr("id", "embedding-height")
+		.attr("type", "text")
+		.attr("size", "4")
+		.attr("maxlength", "4")
+		.property("value", "500");
+}
+
+function hideEmbeddingGuide() {
+	d3.select("#embedding-guide").classed("hidden", true);
+}
+
+function getSearchTitle() {
+	var searchText = d3.select("#agency-or-function-name-filter").text();
+	var yearText = d3.select("#year-filter").text();
+	//TODO
+}
+
 function addSearchForm() {
 	// search for the word specified in the URL fragment identifier 
+	
+	// default search is for "road", unconstrained by date
 	var searchPhrase = "road";
 	var searchYear = "";
-	var fragment = window.location.hash;
+	
+	// default is overridden by parameters in the html (i.e. an embedded provisualizer can specify a different default)
+	var fragment = d3.select("#embed-search").text();
+	
+	// URI fragment ("hash") overrides default again
+	if (window.location.hash != "") {
+		fragment = window.location.hash.substring(1);
+	}
 	if (fragment) {
 		// trim the leading # and decode the fragment identifier
-		var query = decodeURIComponent(fragment.substring(1));
+		var query = decodeURIComponent(fragment);
 		var delimiter = query.indexOf("_");
 		if (delimiter != -1) {
 			// contains a phrase AND a year
@@ -552,13 +633,22 @@ function populateFunctionDropDownList() {
 
 function performSearch() {
 	createFilteredGraphFromLinks();
+	updateUri();
+}
+
+function updateUri() {
+	window.location.hash = "#" + getSearchFragment();
+}	
+
+function getSearchFragment() {
 	var textSearch = d3.select("#agency-or-function-name-filter");
 	var yearSearch = d3.select("#year-filter");
 	searchPhrase = textSearch.property("value");
 	searchYear = yearSearch.property("value");
 	if (searchYear == "") {
-		window.location.hash = "#" + encodeURIComponent(searchPhrase);
+		 return encodeURIComponent(searchPhrase);
 	} else {
-		window.location.hash = "#" + encodeURIComponent(searchPhrase + "_" + searchYear);
+		return encodeURIComponent(searchPhrase + "_" + searchYear);
 	}
-}	
+}
+	

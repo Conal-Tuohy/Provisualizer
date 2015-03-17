@@ -8,7 +8,7 @@
 	bottom: 5px;
 	left: 5px;
 }
-#close-button {
+#provisualizer .close-button {
 	position: absolute;
 	cursor: pointer;
 	top: 5px;
@@ -20,12 +20,38 @@
 	bottom: 5px;
 	right: 5px;
 }
+#embed-search {
+	display: none;
+}
 
 .hidden {
 	display: none;
 }
 #provisualizer #sharing-toolbox h1 {
 	font-size: 12pt;
+}
+#embedding-code {
+	width: 35em;
+	height: 9em;
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+#provisualizer #embedding-guide {
+  width: 36em;
+  height: 15em;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background-color: white;
+  text-align:center;
+  font-family: sans-serif;
+  
+	border: 1px solid black;
+	padding: 10px;
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
 #provisualizer #sharing-toolbox {
   width: 20em;
@@ -129,14 +155,15 @@
 	overflow: clip;
 }
 
-/* Social media links - from https://github.com/mattberridge/Simple-Social-Sharing-Buttons */
+/* Social media links - based on https://github.com/mattberridge/Simple-Social-Sharing-Buttons */
 
 .ss-share {
 padding-left: 0;
 list-style: none; }
 .ss-share-item {
-display: inline;
-margin-right: 1em; }
+display: inline-block;
+margin: 0.4em;
+}
 .ss-share-link {
 	cursor: pointer;
 /* crude button styles */
@@ -151,7 +178,7 @@ border-radius: 2px; }
 color: #891434; }
 [class*="ico-"] {
 display: inline-block;
-background-size: 16px 16px;
+background-size: 20px 20px;
 background-repeat: no-repeat;
 background-position: 10px center; }
 .ico-facebook {
@@ -160,4 +187,10 @@ background-image: url("http://www.facebook.com/favicon.ico"); }
 background-image: url("http://twitter.com/favicons/favicon.ico"); }
 .ico-google {
 background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
+.ico-email {
+background-image: url("email.png"); 
+}	
+.ico-embed {
+background-image: url("embed.png"); 
+}	
 
