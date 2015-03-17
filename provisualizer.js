@@ -569,7 +569,7 @@ function addSearchForm() {
 			}
 		);
 
-		
+	updateUri();
 	return searchForm;
 }
 
