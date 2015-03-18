@@ -108,6 +108,10 @@
   stroke-width: 3px;
 }
 
+#provisualizer .link.highlighted {
+  stroke: #0000B2;
+  stroke-width: 5px;
+}
 
 #provisualizer circle.node {
   cursor: move;
@@ -136,7 +140,7 @@
 	 stroke: white; 
 	 stroke-width: 0px;
 /*	 stroke-width: 3px;*/
-	 stroke-opacity: 50%;
+	 stroke-opacity: 0.5;
 	 stroke-linecap: butt; 
 	 stroke-linejoin: miter; 
 	 fill: black;
@@ -152,7 +156,7 @@
 #provisualizer {
 	position: relative;
 	padding: 0;
-	overflow: clip;
+	overflow: hidden;
 }
 
 /* Social media links - based on https://github.com/mattberridge/Simple-Social-Sharing-Buttons */

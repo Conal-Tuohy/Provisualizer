@@ -21,7 +21,7 @@ var force = d3.layout.force()
 	.size([width, height])
 	.charge(-400)
 	.chargeDistance(350)
-	.linkDistance(50)
+	.linkDistance(80)
 	.on("tick", tick);
 
 var drag = force.drag()
@@ -115,7 +115,11 @@ function tick() {
 }
 
 function dblclick(d) {
-  d3.select(this).classed("fixed", d.fixed = false);
+	// don't propagate the event, otherwise the zoom/pan behaviour will handle it and
+	// effectively nullify the dragging of this individual node
+	d3.event.stopPropagation();
+	// mark the node as not being fixed in place - it can float freely
+	d3.select(this).classed("fixed", d.fixed = false);
 }
 
 function dragstart(d) {  
@@ -242,6 +246,8 @@ function createFilteredGraphFromLinks() {
 				}
 			)
 			.on("dblclick", dblclick)
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
 			.call(drag);		
 			
 	nodeLabels = nodeLabels.data(
@@ -277,6 +283,8 @@ function createFilteredGraphFromLinks() {
 					return n.name;
 				}
 			)
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
 			.on("click", jump);	
 			
 
@@ -671,3 +679,16 @@ function getSearchFragment() {
 		svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
    	}
 
+   	function mouseover(node) {
+   		var connectedLines = svg.selectAll(".link")
+   			.filter(
+   				function(d) {
+   					return d.source == node || d.target == node;
+   				}
+   			);
+   		connectedLines.classed("highlighted", true);
+   	}
+   	
+   	function mouseout() {
+   		var connectedLines = svg.selectAll(".link").classed("highlighted", false);
+   	}
