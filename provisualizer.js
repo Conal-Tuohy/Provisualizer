@@ -12,7 +12,8 @@ var stylesheet = d3.select('head')
 		.attr('href', baseUrl + 'provisualizer.css');
 
 var maxLabelLength = 30;
-var provisualizer = d3.select("#provisualizer");
+var provisualizer = d3.select("#provisualizer").append("div")
+	.attr("style", "width: 100%; height: 100%; margin: 0; padding: 0;");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 
