@@ -118,8 +118,12 @@ function dblclick(d) {
   d3.select(this).classed("fixed", d.fixed = false);
 }
 
-function dragstart(d) {
-  d3.select(this).classed("fixed", d.fixed = true);
+function dragstart(d) {  
+	// don't propagate the event, otherwise the zoom/pan behaviour will handle it and
+	// effectively nullify the dragging of this individual node
+	d3.event.sourceEvent.stopPropagation();
+	// mark the node as being fixed in place
+	d3.select(this).classed("fixed", d.fixed = true);
 }
 
 function jump(d) {
