@@ -15,7 +15,7 @@
 	right: 5px;
 }
 #full-screen-button {
-	position: fixed;
+	position: absolute;
 	cursor: pointer;
 	bottom: 5px;
 	right: 5px;
