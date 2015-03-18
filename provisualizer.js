@@ -301,11 +301,14 @@ function addFullscreenButton() {
 		var fullScreenButton = provisualizer.append("img")
 			.attr("id", "full-screen-button")
 			.attr("src", baseUrl + "fullscreen.png")
-			.attr("alt", "Full screen")
-			.attr("title", "Full screen")
+			.attr("alt", "Toggle full screen")
+			.attr("title", "Toggle full screen")
 			.on("click", toggleFullscreen);
 	}
+	d3.select(document);
+		
 }
+
 function toggleFullscreen() {
 	if (fullscreenElement() == null) {
 		goFullscreen(provisualizer.node());
@@ -339,7 +342,6 @@ function goFullscreen(element) {
 	} else if(element.msRequestFullscreen) {
 		element.msRequestFullscreen();
 	}
-	d3.select("#full-screen-button").attr("title", "Exit full screen");
 }
 function exitFullscreen() {
 	if (document.exitFullscreen) {
@@ -349,7 +351,6 @@ function exitFullscreen() {
 	} else if (document.webkitExitFullscreen) {
 		document.webkitExitFullscreen();
 	}
-	d3.select("#full-screen-button").attr("title", "Full screen");
 }
 
 function addSharingTools() {
@@ -435,7 +436,7 @@ function updateEmbeddingCode() {
 		+ "px; border: 1px solid black;'>\n"
 		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
 		+ "   <script src='http://d3js.org/d3.v3.min.js'></script>\n"
-		+ "   <script src='" 
+		+ "   <script id='provisualizer-script' src='" 
 		+ baseUrl 
 		+ "provisualizer.js'>\n"
 		+ "   </script>\n"
@@ -500,7 +501,11 @@ function addSearchForm() {
 	var searchYear = "";
 	
 	// default is overridden by parameters in the html (i.e. an embedded provisualizer can specify a different default)
-	var fragment = d3.select("#embed-search").text();
+	var fragment;
+	var embeddedSearchSpecifier = d3.select("#embed-search");
+	if (! embeddedSearchSpecifier.empty()) {
+		fragment = embeddedSearchSpecifier.text();
+	}
 	
 	// URI fragment ("hash") overrides default again
 	if (window.location.hash != "") {
