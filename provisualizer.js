@@ -444,9 +444,9 @@ function updateEmbeddingCode() {
 	*/	
 	var embeddingCode = "<div id='provisualizer' style='width: "
 		+ d3.select("#embedding-width").property("value")
-		+ "px; height: "
+		+ "; height: "
 		+ d3.select("#embedding-height").property("value")
-		+ "px; border: 1px solid black;'>\n"
+		+ "; border: 1px solid black;'>\n"
 		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
 		+ "   <script src='http://d3js.org/d3.v3.min.js'></script>\n"
 		+ "   <script id='provisualizer-script' src='" 
@@ -482,18 +482,25 @@ function addEmbeddingGuide() {
 			.on("click", hideEmbeddingGuide);
 	embeddingGuide.append("p").text("Copy and paste this code into the website where you want to embed this visualization");
 	embeddingGuide.append("textarea").attr("id", "embedding-code");
-	embeddingGuide.append("input")
+	var dimensions = embeddingGuide.append("div").attr("class", "dimensions");
+	dimensions.append("label")
+		.attr("for", "embedding-width")
+		.text("Width:");
+	dimensions.append("input")
 		.attr("id", "embedding-width")
 		.attr("type", "text")
-		.attr("size", "4")
-		.attr("maxlength", "4")
-		.property("value", "800");
-	embeddingGuide.append("input")
+		.attr("size", "6")
+		.property("value", "800px")
+		.on("input", updateEmbeddingCode);
+	dimensions.append("label")
+		.attr("for", "embedding-height")
+		.text("Height:");
+	dimensions.append("input")
 		.attr("id", "embedding-height")
 		.attr("type", "text")
-		.attr("size", "4")
-		.attr("maxlength", "4")
-		.property("value", "500");
+		.attr("size", "6")
+		.property("value", "500px")
+		.on("input", updateEmbeddingCode);
 }
 
 function hideEmbeddingGuide() {
