@@ -51,7 +51,6 @@ var svg = provisualizer.append("svg")
 	
 	var linkLines = svg.selectAll(".link");
 	var nodeCircles = svg.selectAll("circle.node");	
-	var nodeLabelShadows = svg.selectAll("text.node-shadow");
 	var nodeLabels = svg.selectAll("text.node");
 	
 	// array of rows read from CSV (unfiltered)
@@ -117,9 +116,6 @@ function tick() {
 		.attr("y1", function(d) { return d.source.y; })
 		.attr("x2", function(d) { return d.target.x; })
 		.attr("y2", function(d) { return d.target.y; });
-	nodeLabelShadows
-		.attr("x", function(d) { return d.x; })
-		.attr("y", function(d) { return d.y; });
 	nodeLabels
 		.attr("x", function(d) { return d.x; })
 		.attr("y", function(d) { return d.y; });
@@ -270,33 +266,8 @@ function createFilteredGraphFromLinks() {
 			return d.name + d.type; 
 		}
 	);
-	nodeLabelShadows = nodeLabelShadows.data(
-		nodes,
-		function(d) { 
-			return d.name + d.type; 
-		}
-	);
 	
 	nodeLabels.exit().remove();
-	nodeLabelShadows.exit().remove();
-	
-	nodeLabelShadows.enter()
-		.append("text")
-			.attr(
-				"class", 
-				function(n) { 
-					return n.type + " node label-shadow";
-				}
-			)
-			.text( 
-				function (n) { 
-					if (n.name.length > maxLabelLength) 
-						return n.name.substring(0, maxLabelLength) + "..."
-					else
-						return n.name; 
-				}
-			);	
-
 	nodeLabels.enter()
 		.append("text")
 			.attr(
