@@ -105,7 +105,7 @@
 
 #provisualizer .link {
   stroke: #CCCCCC;
-  stroke-width: 3px;
+  stroke-width: 2px;
 }
 
 #provisualizer .link.highlighted {
@@ -136,7 +136,6 @@
 #provisualizer text.label {
 	font-family: sans-serif;
 	 font-size: 18px; 
-	 paint-order: stroke; 
 	 stroke: white; 
 	 stroke-width: 0px;
 /*	 stroke-width: 3px;*/
@@ -145,12 +144,23 @@
 	 stroke-linejoin: miter; 
 	 fill: black;
 }
+#provisualizer text.label-shadow {
+	font-family: sans-serif;
+	 font-size: 18px; 
+	 stroke: white; 
+	 stroke-width: 0px;
+	 stroke-width: 2px;
+	 stroke-opacity: 0.5;
+	 stroke-linecap: round; 
+	 stroke-linejoin: round; 
+	 fill: white;
+}
 
-#provisualizer text.label.function {
+#provisualizer text.function {
 	font-size: 16px;
 }
 
-#provisualizer text.label.agency {
+#provisualizer text.agency {
 	font-size: 12px;
 }
 #provisualizer {

@@ -19,9 +19,19 @@ var height = provisualizer.node().offsetHeight;
 
 var force = d3.layout.force()
 	.size([width, height])
-	.charge(-400)
+	.charge(
+		function(node) {
+			return -200 * node.weight;
+		}
+	)
 	.chargeDistance(350)
-	.linkDistance(80)
+	.linkDistance(
+		function(link, index) {
+			//return 80;
+			//return 20 + Math.sqrt(link.source.weight + link.target.weight);
+			return 30 + (Math.sqrt(link.source.weight) + Math.sqrt(link.target.weight)) * 10;
+		}
+	)
 	.on("tick", tick);
 
 var drag = force.drag()
@@ -41,6 +51,7 @@ var svg = provisualizer.append("svg")
 	
 	var linkLines = svg.selectAll(".link");
 	var nodeCircles = svg.selectAll("circle.node");	
+	var nodeLabelShadows = svg.selectAll("text.node-shadow");
 	var nodeLabels = svg.selectAll("text.node");
 	
 	// array of rows read from CSV (unfiltered)
@@ -106,6 +117,9 @@ function tick() {
 		.attr("y1", function(d) { return d.source.y; })
 		.attr("x2", function(d) { return d.target.x; })
 		.attr("y2", function(d) { return d.target.y; });
+	nodeLabelShadows
+		.attr("x", function(d) { return d.x; })
+		.attr("y", function(d) { return d.y; });
 	nodeLabels
 		.attr("x", function(d) { return d.x; })
 		.attr("y", function(d) { return d.y; });
@@ -256,9 +270,33 @@ function createFilteredGraphFromLinks() {
 			return d.name + d.type; 
 		}
 	);
+	nodeLabelShadows = nodeLabelShadows.data(
+		nodes,
+		function(d) { 
+			return d.name + d.type; 
+		}
+	);
 	
 	nodeLabels.exit().remove();
+	nodeLabelShadows.exit().remove();
 	
+	nodeLabelShadows.enter()
+		.append("text")
+			.attr(
+				"class", 
+				function(n) { 
+					return n.type + " node label-shadow";
+				}
+			)
+			.text( 
+				function (n) { 
+					if (n.name.length > maxLabelLength) 
+						return n.name.substring(0, maxLabelLength) + "..."
+					else
+						return n.name; 
+				}
+			);	
+
 	nodeLabels.enter()
 		.append("text")
 			.attr(
