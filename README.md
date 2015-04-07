@@ -13,7 +13,7 @@ The `embedding` folder merely contains an example of how to embed the visualizer
 
 In order to enable embedding of the visualization in other websites, distinct from the site in which it is hosted, it's necessary to make a small configuration change to the hosting web server. 
 
-When the visualization is embedded on another webserver, it will still request its data from the hosting webserver, but browser security will normally block the visualization fromo making such requests, unless the host server explicitly grants permission for its data to used by pages hosted on other webservers. This security issue is called "Cross Origin Resource Sharing" or CORS. See http://enable-cors.org/ for details on CORS and how to enable it on different webservers. For example the following Apache configuration will allow any website to make requests to data within the folder "/provisualizer/":
+When the visualization is embedded on another webserver, it will still request its data from the hosting webserver, but browser security will normally block the visualization from making such requests, unless the host server explicitly grants permission for its data to used by pages hosted on other webservers. This security issue is called "Cross Origin Resource Sharing" or CORS. See http://enable-cors.org/ for details on CORS and how to enable it on different webservers. For example the following Apache configuration will allow any website to make requests to data within the folder "/provisualizer/":
 ```
 # Enable Cross Origina Resource Sharing for PROVisualizer
 #
