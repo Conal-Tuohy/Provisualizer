@@ -11,11 +11,11 @@ The `embedding` folder merely contains an example of how to embed the visualizer
 
 ## Server configuration for CORS
 
-In order to enable embedding of the visualization in other websites, distinct from the site in which it is hosted, it's necessary to make a small configuration change to the hosting web server. 
+In order to enable embedding of the visualization in other websites, distinct from the site in which it is hosted, it's necessary to make a small configuration change to the web server which hosts the data.
 
 When the visualization is embedded on another webserver, it will still request its data from the hosting webserver, but browser security will normally block the visualization from making such requests, unless the host server explicitly grants permission for its data to used by pages hosted on other webservers. This security issue is called "Cross Origin Resource Sharing" or CORS. See http://enable-cors.org/ for details on CORS and how to enable it on different webservers. For example the following Apache configuration will allow any website to make requests to data within the folder "/provisualizer/":
 ```
-# Enable Cross Origina Resource Sharing for PROVisualizer
+# Enable Cross Origin Resource Sharing for PROVisualizer
 #
 <Location /provisualizer/>
   Header set Access-Control-Allow-Origin "*"
@@ -23,7 +23,7 @@ When the visualization is embedded on another webserver, it will still request i
 ```
 
 ## Use
-To view the visualization, navigate a browser to the location of the `index.html` file. Typically any file called `idnex.html` is treated as the default file for a folder, so navigating to the provisualizer folder should cause the web server to serve up the `index.html` page.
+To view the visualization, navigate a browser to the location of the `index.html` file. Typically any file called `index.html` is treated as the default file for a folder, so navigating to the provisualizer folder should cause the web server to serve up the `index.html` page.
 
 To share a link, click the sharing icon in the lower left of the visualization, and choose a sharing tool.
 
@@ -39,4 +39,4 @@ To embed the visualization in another page, using the sharing tool (button in lo
 
 If the user's browser permits full screen mode, a full-screen icon will appear in the lower right corner of the visualization. Clicking the icon will cause the visualization to go full screen, and clicking it again will cause it to return to normal.
 
-When a search is performed, the URI fragment (or "hash") is updated to reflect the search parameters. If this URI is bookmarked or shared, the URI when resolved will cause the search to run again. A default search can be embedded in the HTML of the provisualizer page. The "Embed" share tool automatically includes the current search parameters in the embed code which it generates. If the proviauallizer is run without a URI fragment, it will use the search specified in the HTML. If no default is available, it will fall back to a hard-wired search for "Gold, 1840".
+When a search is performed, the URI fragment (or "hash") is updated to reflect the search parameters. If this URI is bookmarked or shared, the URI when resolved will cause the search to run again. A default search can be embedded in the HTML of the provisualizer page. The "Embed" share tool automatically includes the current search parameters in the embed code which it generates. If the Provisualizer is run without a URI fragment, it will use the search specified in the HTML. If no default is available, it will fall back to a hard-wired search for "Gold, 1840".
