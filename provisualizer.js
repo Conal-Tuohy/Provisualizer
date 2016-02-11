@@ -11,25 +11,31 @@ var stylesheet = d3.select('head')
 		.attr('rel', 'stylesheet')
 		.attr('href', baseUrl + 'provisualizer.css');
 
-var maxLabelLength = 30;
+var maxLabelLength = 80;
 var provisualizer = d3.select("#provisualizer").append("div")
 	.attr("style", "width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 
+// labels don't need a box, just a floating label by itself
+//var popup = provisualizer.append("div")
+//	.attr("class", "popup");
+
 var force = d3.layout.force()
+	.friction(0.9)
+	.gravity(0.08)
 	.size([width, height])
 	.charge(
 		function(node) {
-			return -200 * node.weight;
+			return -400 * node.weight;
 		}
 	)
-	.chargeDistance(350)
+	.chargeDistance(800)
 	.linkDistance(
 		function(link, index) {
 			//return 80;
 			//return 20 + Math.sqrt(link.source.weight + link.target.weight);
-			return 30 + (Math.sqrt(link.source.weight) + Math.sqrt(link.target.weight)) * 10;
+			return 80 + (Math.sqrt(link.source.weight) + Math.sqrt(link.target.weight)) * 20;
 		}
 	)
 	.on("tick", tick);
@@ -235,12 +241,14 @@ function createFilteredGraphFromLinks() {
 					return n.type + " node";
 				}
 			)
+			/*
 			.attr(
 				"title",
 				function(n) {
 					return n.name;
 				}
 			)
+			*/
 			.attr(
 				"r", 
 				function(n) {
@@ -252,7 +260,7 @@ function createFilteredGraphFromLinks() {
 			.style(
 				"fill-opacity", 
 				function(n) {
-					return 1 - (.8/ n.weight);
+					return 0.9 - (.7/ n.weight);
 				}
 			)
 			.on("dblclick", dblclick)
@@ -287,11 +295,27 @@ function createFilteredGraphFromLinks() {
 				}
 			)
 			.attr(
+				"dx",
+				function(n) {
+					//return 10;
+					return Math.sqrt(n.weight) * 5;
+				}
+			)
+			.attr(
+				"dy",
+				function(n) {
+					//return 10;
+					return - Math.sqrt(n.weight) * 5;
+				}
+			)
+			/*
+			.attr(
 				"title",
 				function(n) {
 					return n.name;
 				}
 			)
+			*/
 			.on("mouseover", mouseover)
 			.on("mouseout", mouseout)
 			.on("click", jump);	
@@ -695,7 +719,19 @@ function getSearchFragment() {
 		svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
    	}
 
-   	function mouseover(node) {
+   	function mouseover(node, index) {
+   		// labels don't need box; just a label by itself
+   		//popup.style("left", d3.event.pageX + "px");
+   		//popup.style("top", d3.event.pageY + "px");
+   		//popup.style("display", "inline");
+   		var labels = nodeLabels
+   			.classed(
+   				"selected", 
+   				function(d) {
+   					return d == node;
+   				}
+   			);
+   		
    		var connectedLines = svg.selectAll(".link")
    			.filter(
    				function(d) {
@@ -705,6 +741,10 @@ function getSearchFragment() {
    		connectedLines.classed("highlighted", true);
    	}
    	
-   	function mouseout() {
+   	function mouseout(node, index) {
+   		// labels don't need box; just a label by itself
+   		//popup.style("display", "none");
+   		//d3.select(this).style("display", "none"); 
+   		var labels = nodeLabels.classed("selected", false);
    		var connectedLines = svg.selectAll(".link").classed("highlighted", false);
    	}
