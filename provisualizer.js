@@ -22,7 +22,7 @@ var height = provisualizer.node().offsetHeight;
 //	.attr("class", "popup");
 
 var force = d3.layout.force()
-	.friction(0.9)
+	.friction(0.95)
 	.gravity(0.08)
 	.size([width, height])
 	.charge(
@@ -203,6 +203,40 @@ function createFilteredGraphFromLinks() {
 		}
 	);
 	
+	/*
+	// initialize node locations along a diagonal
+
+	if (nodes.length > 0) {
+		var xIncrement = width / nodes.length;
+		var yIncrement = height / nodes.length;
+		for (var i = 0; i < nodes.length; i++) {
+			nodes[i].x = i * xIncrement;
+			nodes[i].y = i * yIncrement;
+		}
+	}
+	*/
+	/*
+	if (nodes.length > 0) {
+		theta = 2 * 3.14159 / nodes.length;
+		xCentre = width * 0.5;
+		yCentre = height * 0.5;
+		r = Math.sqrt((width * width) + (height * height))/ nodes.length;
+		for (var i = 0; i < nodes.length; i++) {
+			nodes[i].x = xCentre + Math.random();
+			nodes[i].y = yCentre + Math.random();
+		}
+	}	
+	*/
+	if (nodes.length > 0) {
+		theta = 2 * 3.14159 / nodes.length;
+		xCentre = width * 0.5;
+		yCentre = height * 0.5;
+		r = 0.25 * Math.sqrt((width * width) + (height * height)) / (nodes.length * nodes.length);
+		for (var i = 0; i < nodes.length; i++) {
+			nodes[i].x = xCentre + Math.cos(theta * i) * r *  (nodes.length - i) * (nodes.length - i);
+			nodes[i].y = yCentre + Math.sin(theta* i) *  r *  (nodes.length - i) * (nodes.length - i);
+		}
+	}	
 	// create force layout
 	force
 		.nodes(nodes)
@@ -320,7 +354,6 @@ function createFilteredGraphFromLinks() {
 			.on("mouseout", mouseout)
 			.on("click", jump);	
 			
-
 }
 
 
