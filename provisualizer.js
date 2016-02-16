@@ -758,11 +758,13 @@ function getSearchFragment() {
    		//popup.style("top", d3.event.pageY + "px");
    		//popup.style("display", "inline");
    		var labels = nodeLabels
-   			.classed(
-   				"selected", 
+   			.filter(
    				function(d) {
    					return d == node;
    				}
+   			)
+   			.classed(
+   				"selected", true
    			);
    		
    		var connectedLines = svg.selectAll(".link")
@@ -778,6 +780,8 @@ function getSearchFragment() {
    		// labels don't need box; just a label by itself
    		//popup.style("display", "none");
    		//d3.select(this).style("display", "none"); 
-   		var labels = nodeLabels.classed("selected", false);
+   		// disabled hiding of labels, once shown they remain visible, see 
+   		// <https://github.com/Conal-Tuohy/Provisualizer/issues/11#issuecomment-184508962>
+   		// var labels = nodeLabels.classed("selected", false);
    		var connectedLines = svg.selectAll(".link").classed("highlighted", false);
    	}
