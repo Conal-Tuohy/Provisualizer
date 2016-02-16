@@ -228,7 +228,7 @@ function createFilteredGraphFromLinks() {
 	}	
 	*/
 	if (nodes.length > 0) {
-		theta = 2 * 3.14159 / nodes.length;
+		theta = 4 * 3.14159 / nodes.length;
 		xCentre = width * 0.5;
 		yCentre = height * 0.5;
 		r = 0.25 * Math.sqrt((width * width) + (height * height)) / (nodes.length * nodes.length);
@@ -290,7 +290,7 @@ function createFilteredGraphFromLinks() {
 					return Math.sqrt(n.weight) * 10;
 				}
 			)
-			// opacity depends on the node degree - node with infinite degree would be solid, degree 1 would be almost transparent
+			// opacity depends on the node degree - node with high degree would be almost solid, degree 1 would be almost transparent
 			.style(
 				"fill-opacity", 
 				function(n) {
