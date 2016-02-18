@@ -128,15 +128,18 @@
 
 #provisualizer circle.node {
   cursor: move;
+}
+
+circle {
   stroke-width: 2px;
 }
 
-#provisualizer circle.function {
+circle.function {
   fill: #5082E6;
   stroke: #304E8A;
 }
 
-#provisualizer circle.agency {
+circle.agency {
   fill: #F2A915;
   stroke: #91650D;
 }

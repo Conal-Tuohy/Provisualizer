@@ -5,18 +5,52 @@ if (baseUrl == "") {
 }
 
 // add CSS stylesheet
-var stylesheet = d3.select('head')
-	.append('link')
-		.attr('type', 'text/css')
-		.attr('rel', 'stylesheet')
-		.attr('href', baseUrl + 'provisualizer.css');
-
+var head = d3.select('head');
+head.append('link')
+	.attr('type', 'text/css')
+	.attr('rel', 'stylesheet')
+	.attr('href', baseUrl + 'provisualizer.css');
+head.append("link")
+	.attr('type', 'text/css')
+	.attr('rel', 'stylesheet')
+	.attr('href', '//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css');
+		
 var maxLabelLength = 80;
 var provisualizer = d3.select("#provisualizer").append("div")
 	.attr("style", "width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 
+var help = provisualizer.append("div");
+
+var jqueryDialog = $(help[0]);
+jqueryDialog.css("overflow-y:auto; overflow-x:hidden");
+$.get(
+	"help.html",
+	function(data) {
+		jqueryDialog.html(data);
+	}
+);
+// TODO start off hidden and open by clicking a toolbar button
+jqueryDialog.dialog(
+	{
+		title: "Help",
+      	closeText: "hide",
+      	position: {
+      		my: "right center",
+      		at: "right center"
+      	},
+      	width: 500,
+      	height: 500,
+      	buttons: {
+      		Hide: function() {
+      			$( this ).dialog( "close" );
+      		}
+      	}
+    }
+);
+	
+	
 // labels don't need a box, just a floating label by itself
 //var popup = provisualizer.append("div")
 //	.attr("class", "popup");
@@ -505,6 +539,8 @@ function updateEmbeddingCode() {
 	<div id="provisualizer" style="width: 700px; height:900px; border: 1px solid black;">
 		<div id="embed-search">fish</div>
 		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 		<script id="provisualizer-script" src="http://conaltuohy.com/clients/prov/provisualizer/provisualizer.js"></script>
 	</div>
 	*/	
@@ -515,6 +551,8 @@ function updateEmbeddingCode() {
 		+ "; border: 1px solid black;'>\n"
 		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
 		+ "   <script src='http://d3js.org/d3.v3.min.js'></script>\n"
+		+ "   <script src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
+		+ "   <script src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
 		+ "   <script id='provisualizer-script' src='" 
 		+ baseUrl 
 		+ "provisualizer.js'>\n"
