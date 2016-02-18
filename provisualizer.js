@@ -4,7 +4,7 @@ if (baseUrl == "") {
 	baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + "/";
 }
 
-// add CSS stylesheet
+// add CSS stylesheets
 var head = d3.select('head');
 head.append('link')
 	.attr('type', 'text/css')
@@ -23,25 +23,29 @@ var height = provisualizer.node().offsetHeight;
 
 var help = provisualizer.append("div");
 
-var jqueryDialog = $(help[0]);
-jqueryDialog.css("overflow-y:auto; overflow-x:hidden");
+var helpJQueryDialog = $(help[0]);
+helpJQueryDialog.css("overflow-y:auto; overflow-x:hidden; z-index:200");
 $.get(
 	"help.html",
 	function(data) {
-		jqueryDialog.html(data);
+		helpJQueryDialog.html(data);
 	}
 );
 // TODO start off hidden and open by clicking a toolbar button
-jqueryDialog.dialog(
+helpJQueryDialog.dialog(
 	{
+		resizable: false,
+		autoOpen: false,
 		title: "Help",
       	closeText: "hide",
       	position: {
-      		my: "right center",
-      		at: "right center"
+      		my: "bottom",
+      		at: "center"
       	},
-      	width: 500,
-      	height: 500,
+      	width: (width / 3 > 350) ? width / 3 : 350,
+      	height: height / 2,
+      	minWidth: 300,
+      	minHeight: 200,
       	buttons: {
       		Hide: function() {
       			$( this ).dialog( "close" );
@@ -49,6 +53,7 @@ jqueryDialog.dialog(
       	}
     }
 );
+helpJQueryDialog.dialog("open");
 	
 	
 // labels don't need a box, just a floating label by itself
