@@ -576,15 +576,30 @@ function hideSharingToolbox() {
 function showSharingToolbox() {
 		d3.select("#sharing-toolbox").classed("hidden", false);
 }
-
+function hideHelp() {
+	d3.select("#provisualizer .help").classed("hidden", true);
+}
 function addHelp() {
 	var help = provisualizer.append("div");
 	help.classed("help", true);
 	help.classed("hidden", false);
-	help.style("left: 50px; top: 50px; width: 36em; height: 20em;");
+	help.style(
+		{
+			"left": "50px",
+			"top": "50px",
+			"width": "700px",
+			"height": "350px"
+		}
+	);
 	var titleBar = help.append("div");
 	titleBar.classed("titlebar", true);
 	titleBar.text("Help");
+	titleBar.append("img")
+			.attr("class", "close-button")
+			.attr("src", baseUrl + "close.png")
+			.attr("alt", "Close")
+			.attr("title", "Close")
+			.on("click", hideHelp);
 	var helpContent = help.append("div");
 	helpContent.classed("content", true);
 	d3.xhr("help.html", "text/html", function(error, response) {
@@ -595,12 +610,20 @@ function addHelp() {
 	);
 	
 	var helpDrag = d3.behavior.drag();
+	helpDrag.origin(
+		function() {
+			return {
+				"x": provisualizer.node().offsetLeft,
+				"y": provisualizer.node().offsetTop
+			}
+		}
+	);
 	helpDrag.on(
 		"drag", 
 		function(d, i) {
+			// TODO constrain to fit within visualization?
 			var left = help.node().offsetLeft + d3.event.dx;
 			var top = help.node().offsetTop + d3.event.dy;
-			console.log(left, top);
 			help.style(
 				{
 					"left": left + "px",
@@ -608,8 +631,19 @@ function addHelp() {
 				}
 			);
 		}
-	);	
-	help.call(helpDrag);
+	);
+	titleBar.on(
+		"mousedown",
+		function() {
+			help.call(helpDrag);
+		}
+	);
+	titleBar.on(
+		"mouseup", 
+		function() {
+			help.on(".drag", null);
+		}
+	);
 }
 
 function addEmbeddingGuide() {

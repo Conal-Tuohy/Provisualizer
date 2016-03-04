@@ -50,21 +50,25 @@
 	font-family: sans-serif;
 	font-size: 10pt;
 }
-#provisualizer .help .titlebar {
+#provisualizer div.help div.titlebar {
+	cursor: move;
 	margin-left: auto;
 	margin-right: auto;
 	background-color: blue;
-	position: absolute;
+	color: white;
+	font-weight: bold;
+	position: relative;
 }
-#provisualizer .help {
-  cursor: move;
-	/*margin: auto;*/
+#provisualizer div.help div.content {
+	overflow-y: scroll; 
+	overflow-x: auto; 
+	height: 100%;
+ }
+#provisualizer div.help {
 	background-color: white;
-	overflow-y:auto; 
-	overflow-x:hidden; 
 	z-index:200; 
-  width: 36em;
-  height: 17em;
+	width: 36em;
+	height: 17em;
 	position: absolute;
   /*top: 0; left: 0; bottom: 0; right: 0;*/
   
