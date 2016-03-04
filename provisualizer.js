@@ -12,8 +12,7 @@ head.append('link')
 	.attr('href', baseUrl + 'provisualizer.css');
 head.append("link")
 	.attr('type', 'text/css')
-	.attr('rel', 'stylesheet')
-	.attr('href', '//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css');
+	.attr('rel', 'stylesheet');
 		
 var maxLabelLength = 80;
 var provisualizer = d3.select("#provisualizer").append("div")
@@ -21,31 +20,33 @@ var provisualizer = d3.select("#provisualizer").append("div")
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 
-var help = provisualizer.append("div");
 
-var helpJQueryDialog = $(help[0]);
-helpJQueryDialog.css("overflow-y:auto; overflow-x:hidden; z-index:200");
+//var helpJQueryDialog = $(help[0]);
+//helpJQueryDialog.css("overflow-y:auto; overflow-x:hidden; z-index:200");
+/*
 $.get(
 	"help.html",
 	function(data) {
 		helpJQueryDialog.html(data);
 	}
 );
+*/
 // TODO start off hidden and open by clicking a toolbar button
+/*
 helpJQueryDialog.dialog(
 	{
-		resizable: false,
+		resizable: true,
 		autoOpen: false,
 		title: "Help",
       	closeText: "hide",
       	position: {
       		my: "bottom",
-      		at: "center"
+      		at: "top center"
       	},
-      	width: (width / 3 > 350) ? width / 3 : 350,
-      	height: height / 2,
-      	minWidth: 300,
-      	minHeight: 200,
+      	//width: (width / 3 > 350) ? width / 3 : 350,
+      	//height: height / 2,
+      	//minWidth: 300,
+      	//minHeight: 200,
       	buttons: {
       		Hide: function() {
       			$( this ).dialog( "close" );
@@ -54,6 +55,7 @@ helpJQueryDialog.dialog(
     }
 );
 helpJQueryDialog.dialog("open");
+      	*/
 	
 	
 // labels don't need a box, just a floating label by itself
@@ -86,6 +88,7 @@ addSearchForm();
 addSharingTools();
 addFullscreenButton();
 addEmbeddingGuide();
+addHelp();
 
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
@@ -544,8 +547,6 @@ function updateEmbeddingCode() {
 	<div id="provisualizer" style="width: 700px; height:900px; border: 1px solid black;">
 		<div id="embed-search">fish</div>
 		<script src="http://d3js.org/d3.v3.min.js"></script>
-		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 		<script id="provisualizer-script" src="http://conaltuohy.com/clients/prov/provisualizer/provisualizer.js"></script>
 	</div>
 	*/	
@@ -556,8 +557,6 @@ function updateEmbeddingCode() {
 		+ "; border: 1px solid black;'>\n"
 		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
 		+ "   <script src='http://d3js.org/d3.v3.min.js'></script>\n"
-		+ "   <script src='//code.jquery.com/jquery-1.10.2.js'></script>\n"
-		+ "   <script src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>\n"
 		+ "   <script id='provisualizer-script' src='" 
 		+ baseUrl 
 		+ "provisualizer.js'>\n"
@@ -576,6 +575,41 @@ function hideSharingToolbox() {
 }
 function showSharingToolbox() {
 		d3.select("#sharing-toolbox").classed("hidden", false);
+}
+
+function addHelp() {
+	var help = provisualizer.append("div");
+	help.classed("help", true);
+	help.classed("hidden", false);
+	help.style("left: 50px; top: 50px; width: 36em; height: 20em;");
+	var titleBar = help.append("div");
+	titleBar.classed("titlebar", true);
+	titleBar.text("Help");
+	var helpContent = help.append("div");
+	helpContent.classed("content", true);
+	d3.xhr("help.html", "text/html", function(error, response) {
+			if (error) 
+				return console.warn("Error loading help file");
+			helpContent.html(response.response);
+		}
+	);
+	
+	var helpDrag = d3.behavior.drag();
+	helpDrag.on(
+		"drag", 
+		function(d, i) {
+			var left = help.node().offsetLeft + d3.event.dx;
+			var top = help.node().offsetTop + d3.event.dy;
+			console.log(left, top);
+			help.style(
+				{
+					"left": left + "px",
+					"top": top + "px"
+				}
+			);
+		}
+	);	
+	help.call(helpDrag);
 }
 
 function addEmbeddingGuide() {
