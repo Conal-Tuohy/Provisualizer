@@ -19,7 +19,10 @@ var provisualizer = d3.select("#provisualizer").append("div")
 	.attr("style", "width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
+var labelFadeTime = 3000;
+var labelFadeDelay = 5000;
 
+var hideLabelsButton;
 
 //var helpJQueryDialog = $(help[0]);
 //helpJQueryDialog.css("overflow-y:auto; overflow-x:hidden; z-index:200");
@@ -57,7 +60,7 @@ helpJQueryDialog.dialog(
 helpJQueryDialog.dialog("open");
       	*/
 	
-	
+      		
 // labels don't need a box, just a floating label by itself
 //var popup = provisualizer.append("div")
 //	.attr("class", "popup");
@@ -89,6 +92,7 @@ addSharingTools();
 addFullscreenButton();
 addEmbeddingGuide();
 addHelp();
+startLabelFadeTimer();
 
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
@@ -646,6 +650,49 @@ function addHelp() {
 	);
 }
 
+function startLabelFadeTimer() {
+	d3.timer(
+		function(ms) {
+			nodeLabels
+				.filter(
+					function(d) {
+						return d.fadeTime != null && d.fadeTime < Date.now();
+					}
+				)
+				.classed(
+					"selected", false
+				)
+				.each(
+					function(label) {
+						/*
+						console.log(
+							"Deleting fadeTime of " + 
+							label.fadeTime +
+							" at " + 
+							Date.now()
+						);
+						*/
+						label.fadeTime = null;	
+						// if there are no more visible labels, disable the "hide labels" button
+						if (d3.select("text.node.selected").empty()) {
+							hideLabelsButton.attr("disabled", "disabled")
+						};
+					}
+				);
+
+			
+			/* chaining transitions: 				http://stackoverflow.com/questions/10692100/invoke-a-callback-at-the-end-of-a-transition
+			*/
+			/*
+			.transition("fader")
+			.attr("opacity", 0.0);
+			*/
+			
+			return false;
+		}
+	);
+}
+
 function addEmbeddingGuide() {
 	var embeddingGuide = provisualizer.append("div")
 		.attr("id", "embedding-guide")
@@ -772,6 +819,21 @@ function addSearchForm() {
 				performSearch();
 			}
 		);
+		
+	hideLabelsButton = searchForm.append("input")
+		.attr("id", "hide-labels")
+		.attr("type", "submit")
+		.attr("disabled", "disabled")
+		.property("value", "Hide Labels");
+	
+	hideLabelsButton.on(
+		"click",
+		function(d, i) {
+			// this event is now handled
+			d3.event.preventDefault();
+			nodeLabels.classed("selected", false);
+		}
+	);
 
 	updateUri();
 	return searchForm;
@@ -877,6 +939,10 @@ function getSearchFragment() {
    			.classed(
    				"selected", true
    			);
+   		//if (! labels.empty()) {
+   			// enable the "hide labels button")
+   			hideLabelsButton.attr("disabled", null);
+   		//}
    		
    		var connectedLines = svg.selectAll(".link")
    			.filter(
@@ -895,4 +961,15 @@ function getSearchFragment() {
    		// <https://github.com/Conal-Tuohy/Provisualizer/issues/11#issuecomment-184508962>
    		// var labels = nodeLabels.classed("selected", false);
    		var connectedLines = svg.selectAll(".link").classed("highlighted", false);
+   		var labels = nodeLabels
+   			.filter(
+   				function(d) {
+   					return d == node;
+   				}
+   			)
+   			.each(
+   				function(label) {
+   					label.fadeTime = Date.now() + labelFadeDelay;
+   				}
+   			);
    	}
