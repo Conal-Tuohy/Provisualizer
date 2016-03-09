@@ -207,7 +207,7 @@ circle.agency {
 #provisualizer {
 	position: relative;
 	padding: 0;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 /* Social media links - based on https://github.com/mattberridge/Simple-Social-Sharing-Buttons */
