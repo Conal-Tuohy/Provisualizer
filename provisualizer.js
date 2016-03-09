@@ -580,13 +580,20 @@ function hideSharingToolbox() {
 function showSharingToolbox() {
 		d3.select("#sharing-toolbox").classed("hidden", false);
 }
+function showHelp() {
+	d3.select("#provisualizer .help").classed("hidden", false);
+	d3.select("#show-help").attr("disabled", "disabled");
+}
+
 function hideHelp() {
 	d3.select("#provisualizer .help").classed("hidden", true);
+	d3.select("#show-help").attr("disabled", null);
 }
+
 function addHelp() {
 	var help = provisualizer.append("div");
 	help.classed("help", true);
-	help.classed("hidden", false);
+	help.classed("hidden", true);
 	help.style(
 		{
 			"left": "50px",
@@ -832,6 +839,20 @@ function addSearchForm() {
 			// this event is now handled
 			d3.event.preventDefault();
 			nodeLabels.classed("selected", false);
+		}
+	);
+	
+	showHelpButton = searchForm.append("input")
+		.attr("id", "show-help")
+		.attr("type", "submit")
+		.property("value", "Show Help");
+		
+	showHelpButton.on(
+		"click",
+		function(d, i) {
+			// event handled; no further processing needed
+			d3.event.preventDefault();
+			showHelp();
 		}
 	);
 
