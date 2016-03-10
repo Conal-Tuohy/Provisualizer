@@ -20,7 +20,7 @@ var provisualizer = d3.select("#provisualizer").append("div")
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 var labelFadeTime = 3000;
-var labelFadeDelay = 5000;
+var labelFadeDelay = 10000;
 
 var hideLabelsButton;
 
@@ -597,21 +597,25 @@ function addHelp() {
 	help.style(
 		{
 			"left": "50px",
-			"top": "50px",
+			"top": "50px"
+			/*,
 			"width": "700px",
 			"height": "350px"
+			*/
 		}
 	);
 	var titleBar = help.append("div");
 	titleBar.classed("titlebar", true);
-	titleBar.text("Help");
+	titleBar.text("Need Help?");
 	titleBar.append("img")
 			.attr("class", "close-button")
 			.attr("src", baseUrl + "close.png")
 			.attr("alt", "Close")
 			.attr("title", "Close")
 			.on("click", hideHelp);
-	var helpContent = help.append("div");
+	var dialogPanel = help.append("div");
+	dialogPanel.classed("panel", true);
+	var helpContent = dialogPanel.append("div");
 	helpContent.classed("content", true);
 	d3.xhr("help.html", "text/html", function(error, response) {
 			if (error) 
@@ -839,6 +843,7 @@ function addSearchForm() {
 			// this event is now handled
 			d3.event.preventDefault();
 			nodeLabels.classed("selected", false);
+			hideLabelsButton.attr("disabled", "disabled");
 		}
 	);
 	
