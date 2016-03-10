@@ -617,7 +617,7 @@ function addHelp() {
 	dialogPanel.classed("panel", true);
 	var helpContent = dialogPanel.append("div");
 	helpContent.classed("content", true);
-	d3.xhr("help.html", "text/html", function(error, response) {
+	d3.xhr(baseUrl + "help.html", "text/html", function(error, response) {
 			if (error) 
 				return console.warn("Error loading help file");
 			helpContent.html(response.response);
@@ -779,7 +779,9 @@ function addSearchForm() {
 			searchPhrase = query;
 		}
 	}
-	var toolBar = provisualizer.append("div");
+	var toolBar = provisualizer.append("div").attr("id", "toolbar");
+	toolBar.append("h1").text("PROVISUALIZER");
+	toolBar.append("p").text("This visualization will give you a high-level view of the archives.");
 	var searchForm = toolBar.append("form");
 	var labelSearch = searchForm.append("label")
 		.attr("id", "agency-or-function-name-label")
@@ -793,7 +795,7 @@ function addSearchForm() {
 	var functionListLabel = searchForm.append("label")
 		.attr("id", "function-list-label")
 		.attr("for", "function-list")
-		.text("... or select a function:");
+		.text("... or select a function: ");
 	var functionList = searchForm.append("select")
 		.attr("id", "function-list")
 		.on(

@@ -1,4 +1,4 @@
-
+@import url(https://fonts.googleapis.com/css?family=PT+Sans:400,700);
 
 #provisualizer div.popup {
 	position: absolute;
@@ -14,6 +14,7 @@
 #provisualizer {
 	position: relative;
 	background-color: white;
+	font-family: 'PT Sans', sans-serif;
 /*	overflow: hidden;*/
 }
 #share-button {
@@ -48,7 +49,6 @@
 #embedding-code {
 	width: 35em;
 	height: 11em;
-	font-family: sans-serif;
 	font-size: 10pt;
 }
 #provisualizer div.help div.titlebar {
@@ -61,7 +61,7 @@
 	margin: 3px;
 	background-image: linear-gradient(#E0E0E0, #CCCCCC);
 	font-weight: bold;
-	font-size: 24px;
+	font-size: 22px;
 	position: relative;
 }
 #provisualizer div.help div.panel div.content {
@@ -104,7 +104,6 @@
   top: 0; left: 0; bottom: 0; right: 0;
   background-color: white;
   text-align:center;
-  font-family: sans-serif;
   
 	border: 1px solid black;
 	padding: 10px;
@@ -114,14 +113,13 @@
 }
 #provisualizer #sharing-toolbox {
   width: 20em;
-  height: 10em;
+  height: 11em;
   overflow: auto;
   margin: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
   background-color: white;
   text-align:center;
-  font-family: sans-serif;
   
 	border: 1px solid black;
 	padding: 10px;
@@ -129,22 +127,41 @@
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
-#provisualizer form {
+#provisualizer #toolbar {
+	background-color: white;
+	text-align: center;
 	position: absolute;
 	left: 0;
 	top: 0;
+	width: 100%;
+}
+#provisualizer #toolbar h1 {
+	margin: 3px;
+}
+#provisualizer #toolbar p {
+	margin: 3px;
+}
+#provisualizer form {
+	/*
+	position: absolute;
+	left: 0;
+	top: 0;
+	*/
 	width: auto;
-	
+	padding: 10px;
+	margin: 0;
+	/*
+	border: 1px solid black;
 	font-family: sans-serif;
 	background-color: #F0F0F7;
-	border: 1px solid black;
-	padding: 10px;
+
 	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	*/
 }
 
-#provisualizer select {	font-family: sans-serif;
+#provisualizer select {	
 
 }
 #provisualizer label {
@@ -196,7 +213,6 @@ circle.agency {
 
 
 #provisualizer text.label {
-	font-family: sans-serif;
 	font-weight: normal;
 	 font-size: 24px; 
 	 stroke: white; 
