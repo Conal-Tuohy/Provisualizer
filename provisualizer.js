@@ -92,7 +92,7 @@ addSharingTools();
 addFullscreenButton();
 addEmbeddingGuide();
 addHelp();
-startLabelFadeTimer();
+//startLabelFadeTimer();
 
 var svg = provisualizer.append("svg")
 	.attr("width", "100%")
@@ -442,7 +442,7 @@ function toggleFullscreen() {
 	}
 }
 function fullscreenEnabled() {
-	return  document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
+	return  document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled;
 }
 function fullscreenElement() {
 	if (document.fullscreenElement) {
@@ -471,6 +471,8 @@ function goFullscreen(element) {
 function exitFullscreen() {
 	if (document.exitFullscreen) {
 		document.exitFullscreen();
+	} else if (document.msExitFullscreen) {
+		document.msExitFullscreen();
 	} else if (document.mozCancelFullScreen) {
 		document.mozCancelFullScreen();
 	} else if (document.webkitExitFullscreen) {
@@ -568,7 +570,6 @@ function updateEmbeddingCode() {
 		+ "</div>";
 	var embeddingCodeWidget = d3.select("#embedding-code");
 	embeddingCodeWidget.text(embeddingCode);
-	embeddingCodeWidget.node().setSelectionRange(0, embeddingCodeWidget.property("value").length);
 }
 function toggleSharingToolbox() {
 	var toolbox = d3.select("#sharing-toolbox");
@@ -716,7 +717,13 @@ function addEmbeddingGuide() {
 			.attr("title", "Close")
 			.on("click", hideEmbeddingGuide);
 	embeddingGuide.append("p").text("Copy and paste this code into the website where you want to embed this visualization");
-	embeddingGuide.append("textarea").attr("id", "embedding-code");
+	embeddingGuide.append("textarea")
+		.attr("id", "embedding-code")
+		.on("focus", function() {
+			// on focus, select all
+			var widget = d3.select("#embedding-code");
+			widget.node().setSelectionRange(0, widget.property("value").length);
+		});
 	var dimensions = embeddingGuide.append("div").attr("class", "dimensions");
 	dimensions.append("label")
 		.attr("for", "embedding-width")
@@ -751,8 +758,8 @@ function getSearchTitle() {
 function addSearchForm() {
 	// search for the word specified in the URL fragment identifier 
 	
-	// default search is for "road", unconstrained by date
-	var searchPhrase = "road";
+	// default search is for "environment", unconstrained by date
+	var searchPhrase = "environment";
 	var searchYear = "";
 	
 	// default is overridden by parameters in the html (i.e. an embedded provisualizer can specify a different default)
