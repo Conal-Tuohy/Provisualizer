@@ -177,6 +177,11 @@
 	height: 2em;
 }
 
+#provisualizer td {
+	vertical-align: top;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
 
 
 #provisualizer .link {
@@ -197,12 +202,17 @@ circle {
   stroke-width: 2px;
 }
 
-circle.function {
+circle.VPRS {
+	fill: #E65050;
+	stroke: #7D2C2C;
+}
+
+circle.VF {
   fill: #5082E6;
   stroke: #304E8A;
 }
 
-circle.agency {
+circle.VA {
   fill: #F2A915;
   stroke: #91650D;
 }
@@ -234,7 +244,7 @@ circle.agency {
 /*	font-size: 16px;*/
 }
 
-#provisualizer text.agency {
+#provisualizer text.VA {
 /*	font-size: small;*/
 }
 #provisualizer {

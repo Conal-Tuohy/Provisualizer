@@ -106,7 +106,7 @@ var svg = provisualizer.append("svg")
 	var nodeLabels = svg.selectAll("text.node");
 	
 	// array of rows read from CSV (unfiltered)
-	var agencyFunctionRelationships = [];
+	var edges = [];
 
 	// map from node names to node attributes
 	var nodeAttributesByNodeName = {};
@@ -120,9 +120,9 @@ d3.csv(
 	function(error, nodeAttributes) {
 		nodeAttributes.forEach(
 			function(nodeAttributeSet) {
-				if (nodeAttributeSet.FUNCTION.substr(0, 2) == "VF") {
-					// then it is a function, not an agency
-					functionNames.push(nodeAttributeSet.FUNCTION);
+				if (nodeAttributeSet.NAME.substr(0, 2) == "VF") {
+					// then the node represents a function, not an agency or series
+					functionNames.push(nodeAttributeSet.NAME);
 				}
 			}
 		);
@@ -135,16 +135,14 @@ d3.csv(
 		populateFunctionDropDownList();
 		nodeAttributes.forEach(
 			function(nodeAttributeSet) {
-				nodeAttributesByNodeName[nodeAttributeSet.FUNCTION] = nodeAttributeSet; // though we don't really need to copy the FUNCTION column
+				nodeAttributesByNodeName[nodeAttributeSet.NAME] = nodeAttributeSet; 
 			}
 		);
 		// Now these node attributes can be read below
-		// Note: the "FUNCTION" column is misnamed because it includes both functions AND agencies; it should be NODE.
-		// Also the table should really have included a TYPE column to specify "function" or "agency"
 		d3.csv(
-			baseUrl + "data/agency-functions.csv", 
-			function(error, agencyFunctionRelationshipsCSV) {
-				agencyFunctionRelationships = agencyFunctionRelationshipsCSV;
+			baseUrl + "data/edges.csv", 
+			function(error, edgesCSV) {
+				edges = edgesCSV;
 				createFilteredGraphFromLinks();
 			}
 		)
@@ -196,6 +194,21 @@ function jump(d) {
 	window.open(d.URL, d.name);
 }
 
+function includeNode(nodeName, nodes, nodeIndicesByNodeName) {
+	if (! (nodeName in nodeIndicesByNodeName)) {
+		// no node with that name yet
+		var newNodeIndex = nodes.length;
+		var displayNode =  {
+			name: nodeName,
+			type: nodeName.substr(0, nodeName.indexOf(" ")) // "VF", "VA", or "VPRS"
+		};
+		var nodeAttributes = nodeAttributesByNodeName[nodeName];
+		for(var p in nodeAttributes) displayNode[p]=nodeAttributes[p];
+		nodes[newNodeIndex] = displayNode;
+		nodeIndicesByNodeName[nodeName] = newNodeIndex;
+	}
+}
+
 function createFilteredGraphFromLinks() {
 	// Extract the distinct nodes from the node relationship table.
 	
@@ -205,44 +218,23 @@ function createFilteredGraphFromLinks() {
 	// map from node names to node array indices
 	var nodeIndicesByNodeName = {};
 	
-	agencyFunctionRelationships.forEach(
-		function(agencyFunctionRow) {
-			var agencyPeriod = nodeAttributesByNodeName[agencyFunctionRow.AGENCY].PERIOD;
+	edges.forEach(
+		function(edge) {
+			var sourcePeriod = nodeAttributesByNodeName[edge.SOURCE].PERIOD;
+			var targetPeriod = nodeAttributesByNodeName[edge.TARGET].PERIOD;
 			if (
-				matchesDateFilter(agencyPeriod) &&
-				(matchesTextFilter(agencyFunctionRow.FUNCTION) || matchesTextFilter(agencyFunctionRow.AGENCY))
+				// TODO check the criteria for inclusion. Currently both nodes must have matching dates,
+				// and one node must have matching text.
+				matchesDateFilter(sourcePeriod) &&
+				matchesDateFilter(targetPeriod) &&
+				(matchesTextFilter(edge.SOURCE) || matchesTextFilter(edge.TARGET))
 			) {
-			
-				if (! (agencyFunctionRow.AGENCY in nodeIndicesByNodeName)) {
-					// no node with that name yet
-					var newNodeIndex = nodes.length;
-					var agencyNode =  {
-						name: agencyFunctionRow.AGENCY,
-						type: "agency"
-					};
-					var nodeAttributes = nodeAttributesByNodeName[agencyFunctionRow.AGENCY];
-					for(var p in nodeAttributes) agencyNode[p]=nodeAttributes[p];
-					nodes[newNodeIndex] = agencyNode;
-					nodeIndicesByNodeName[agencyFunctionRow.AGENCY] = newNodeIndex;
-					addNodeLabel(agencyNode, nodes, links);
-				}
-				if (! (agencyFunctionRow.FUNCTION in nodeIndicesByNodeName)) {
-					// no node with that name yet
-					var newNodeIndex = nodes.length;
-					var functionNode = {
-						name: agencyFunctionRow.FUNCTION,
-						type: "function"
-					};
-					var nodeAttributes = nodeAttributesByNodeName[agencyFunctionRow.FUNCTION];
-					for(var p in nodeAttributes) functionNode[p]=nodeAttributes[p];
-					nodes[newNodeIndex] = functionNode;
-					nodeIndicesByNodeName[agencyFunctionRow.FUNCTION] = newNodeIndex;
-					addNodeLabel(functionNode, nodes, links);
-				}
+				includeNode(edge.SOURCE, nodes, nodeIndicesByNodeName);
+				includeNode(edge.TARGET, nodes, nodeIndicesByNodeName);
 				links.push(
 					{
-						source: nodes[nodeIndicesByNodeName[agencyFunctionRow.AGENCY]],
-						target: nodes[nodeIndicesByNodeName[agencyFunctionRow.FUNCTION]]
+						source: nodes[nodeIndicesByNodeName[edge.SOURCE]],
+						target: nodes[nodeIndicesByNodeName[edge.TARGET]]
 					}
 				)
 			}
