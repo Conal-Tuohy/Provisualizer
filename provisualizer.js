@@ -91,7 +91,9 @@ addSearchForm();
 addSharingTools();
 addFullscreenButton();
 addEmbeddingGuide();
+addZeroResultsDialog();
 addHelp();
+
 //startLabelFadeTimer();
 
 var svg = provisualizer.append("svg")
@@ -265,7 +267,10 @@ function createFilteredGraphFromLinks() {
 		}
 	}	
 	*/
-	if (nodes.length > 0) {
+	if (nodes.length == 0) {
+		showZeroResultsDialog();
+	} else {
+		hideZeroResultsDialog();
 		theta = 4 * 3.14159 / nodes.length;
 		xCentre = width * 0.5;
 		yCentre = height * 0.5;
@@ -470,6 +475,30 @@ function exitFullscreen() {
 	} else if (document.webkitExitFullscreen) {
 		document.webkitExitFullscreen();
 	}
+}
+
+function addZeroResultsDialog() {
+	var zeroResultsDialog = provisualizer.append("div")
+		.attr("id", "zero-results-dialog")
+		.classed("hidden", "true");
+	zeroResultsDialog.append("img")
+		.attr("class", "close-button")
+		.attr("src", baseUrl + "close.png")
+		.attr("alt", "Close")
+		.attr("title", "Close")
+		.on("click", hideZeroResultsDialog);
+	zeroResultsDialog.append("h1")
+		.text("No matches found");
+	zeroResultsDialog.append("p")
+		.text("Your search turned up no results, please try again with a broader search.");
+}
+
+function showZeroResultsDialog() {
+	d3.select("#zero-results-dialog").classed("hidden", false);
+}
+
+function hideZeroResultsDialog() {
+	d3.select("#zero-results-dialog").classed("hidden", true);
 }
 
 function addSharingTools() {
