@@ -779,9 +779,9 @@ function getSearchTitle() {
 function addSearchForm() {
 	// search for the word specified in the URL fragment identifier 
 	
-	// default search is for "environment", unconstrained by date
-	var searchPhrase = "environment";
-	var searchYear = "";
+	// default search is for "Aboriginal", in 1840
+	var searchPhrase = "Aboriginal";
+	var searchYear = "1840";
 	
 	// default is overridden by parameters in the html (i.e. an embedded provisualizer can specify a different default)
 	var fragment;
