@@ -637,6 +637,9 @@ function addHelp() {
 			.on("click", hideHelp);
 	var dialogPanel = help.append("div");
 	dialogPanel.classed("panel", true);
+	var helpContent = dialogPanel.append("iframe")
+		.attr("src", baseUrl + "help.html");
+	/*
 	var helpContent = dialogPanel.append("div");
 	helpContent.classed("content", true);
 	d3.xhr(baseUrl + "help.html", "text/html", function(error, response) {
@@ -645,6 +648,7 @@ function addHelp() {
 			helpContent.html(response.response);
 		}
 	);
+	*/
 	
 	var helpDrag = d3.behavior.drag();
 	helpDrag.origin(
