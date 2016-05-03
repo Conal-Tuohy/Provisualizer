@@ -181,9 +181,6 @@
 #provisualizer select {	
 
 }
-#provisualizer label {
-	margin-left: 5px;
-}
 #provisualizer input {
 	width: auto;
 	margin-left: 5px;
@@ -250,6 +247,9 @@ circle.VA {
 	 fill: black;
 	 visibility: hidden;
 	 cursor: pointer;
+}
+#provisualizer text.right-aligned {
+	text-anchor: end;
 }
 #provisualizer text.label:hover {
 	text-decoration: underline;

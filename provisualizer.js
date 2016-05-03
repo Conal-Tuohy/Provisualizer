@@ -169,8 +169,16 @@ function tick() {
 		.attr("x2", function(d) { return d.target.x; })
 		.attr("y2", function(d) { return d.target.y; });
 	nodeLabels
-		.attr("x", function(d) { return d.x; })
+		.attr("x", function(d) { 
+			if (d.x > width / 2)
+				return d.x + 15;
+			else
+				return d.x - 15;
+		})
 		.attr("y", function(d) { return d.y; });
+	nodeLabels.classed("right-aligned", function(d) {
+			return d.x < width / 2;
+	});
 	nodeCircles
 		.attr("cx", function(d) { return d.x; })
 		.attr("cy", function(d) { return d.y; });
