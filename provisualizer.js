@@ -838,6 +838,10 @@ function addSearchForm() {
 		.text("... or select a function: ");
 	var functionList = searchForm.append("select")
 		.attr("id", "function-list")
+		.attr("class", "default") // defeat "JCF - JavaScript Custom Forms"
+		// JCF would otherwise replace this select element with another one that may or may not work
+		// JCF used on PROV's Drupal-based website.
+		// NB similar problems are always possible on other sites.
 		.on(
 			"change", 
 			function(d, i) {
