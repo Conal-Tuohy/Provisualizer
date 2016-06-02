@@ -95,11 +95,12 @@ addZeroResultsDialog();
 addHelp();
 
 //startLabelFadeTimer();
-
-var svg = provisualizer.append("svg")
+var zoomBehavior = d3.behavior.zoom();
+var outerSvg = provisualizer.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%") 
-    		.call(d3.behavior.zoom().on("zoom", zoom))
+    		.call(zoomBehavior.on("zoom", zoom));
+var svg = outerSvg
     	.append("g");
 	
 	
@@ -182,6 +183,7 @@ function tick() {
 	nodeCircles
 		.attr("cx", function(d) { return d.x; })
 		.attr("cy", function(d) { return d.y; });
+	zoomToFit();
 }
 
 function dblclick(d) {
@@ -279,9 +281,9 @@ function createFilteredGraphFromLinks() {
 		showZeroResultsDialog();
 	} else {
 		hideZeroResultsDialog();
-		theta = 4 * 3.14159 / nodes.length;
-		xCentre = width * 0.5;
-		yCentre = height * 0.5;
+		theta = 2 * 3.14159 * Math.sqrt(nodes.length);
+		xCentre = 0;//width * 0.5;
+		yCentre = 0;//height * 0.5;
 		r = 0.25 * Math.sqrt((width * width) + (height * height)) / (nodes.length * nodes.length);
 		for (var i = 0; i < nodes.length; i++) {
 			nodes[i].x = xCentre + Math.cos(theta * i) * r *  (nodes.length - i) * (nodes.length - i);
@@ -405,6 +407,12 @@ function createFilteredGraphFromLinks() {
 			.on("mouseout", mouseout)
 			.on("click", jump);	
 			
+	var ticks = 20;
+	var startTime = new Date().getTime();
+	for (var i = 0; i < ticks; ++i) force.tick();
+	var endTime = new Date().getTime();
+	console.log("Running force layout for", ticks, "ticks, in", endTime - startTime, "ms");
+		
 }
 
 
@@ -791,7 +799,7 @@ function getSearchTitle() {
 function addSearchForm() {
 	// search for the word specified in the URL fragment identifier 
 	
-	// default search is for "soil", in 1840
+	// default search is for "soil", in no particular year
 	var searchPhrase = "soil";
 	var searchYear = "";
 	
@@ -906,6 +914,18 @@ function addSearchForm() {
 			showHelp();
 		}
 	);
+	
+	zoomToFitButton = searchForm.append("input")
+		.attr("type", "submit")
+		.property("value", "Zoom to fit");
+		
+	zoomToFitButton.on(
+		"click",
+		function(d, i) {
+			d3.event.preventDefault();
+			resetManualZoom();
+		}
+	);
 
 	updateUri();
 	return searchForm;
@@ -972,6 +992,7 @@ function populateFunctionDropDownList() {
 function performSearch() {
 	createFilteredGraphFromLinks();
 	updateUri();
+	resetManualZoom()
 }
 
 function updateUri() {
@@ -994,7 +1015,42 @@ function getSearchFragment() {
 	
 	// zoom and pan
 	function zoom() {
+		//console.log("translate: ", d3.event.translate, ", scale: ", d3.event.scale);
 		svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+   	}
+   	
+   	function resetManualZoom() {
+		zoomBehavior.translate([0, 0]);
+		zoomBehavior.scale(1);
+		zoomBehavior.event(svg);	
+   	}
+   	
+   	function zoomToFit() {
+   		var bbox = svg.node().getBBox();
+   		var viewBox = outerSvg.attr("viewBox");
+		if (viewBox == null) {
+			outerSvg.attr(
+				"viewBox", 
+				bbox.x + " " + 
+				bbox.y + " " + 
+				bbox.width + " " + 
+				bbox.height
+			);
+		} else{
+			var viewBoxValues = viewBox.split(" ");
+			var viewBoxX = parseFloat(viewBoxValues[0]);
+			var viewBoxY = parseFloat(viewBoxValues[1]);
+			var viewBoxWidth = parseFloat(viewBoxValues[2]);
+			var viewBoxHeight = parseFloat(viewBoxValues[3]);
+   			var smoothing = 20;
+			outerSvg.attr(
+				"viewBox", 
+				(bbox.x + smoothing * viewBoxX) / (smoothing + 1) + " " + 
+				(bbox.y + smoothing * viewBoxY) / (smoothing + 1) + " " + 
+				(bbox.width + smoothing * viewBoxWidth) / (smoothing + 1) + " " + 
+				(bbox.height + smoothing * viewBoxHeight) / (smoothing + 1)
+			);
+		}
    	}
 
    	function mouseover(node, index) {
