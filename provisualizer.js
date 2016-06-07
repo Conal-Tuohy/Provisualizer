@@ -243,7 +243,7 @@ function createFilteredGraphFromLinks() {
 				// and one node must have matching text.
 				matchesDateFilter(sourcePeriod) &&
 				matchesDateFilter(targetPeriod) &&
-				(matchesTextFilter(edge.SOURCE) || matchesTextFilter(edge.TARGET))
+				(matchesTextFilter(edge.SOURCE + " " + edge.TARGET))
 			) {
 				includeNode(edge.SOURCE, nodes, nodeIndicesByNodeName);
 				includeNode(edge.TARGET, nodes, nodeIndicesByNodeName);
@@ -943,9 +943,23 @@ function addSearchForm() {
 	return searchForm;
 }
 
+/* TODO remove all this d3 cruft from these two functions to optimize performance */
 function matchesTextFilter(text) {
 	var textFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
-	return text.toUpperCase().indexOf(textFilter) != -1
+	var matchAllWords = d3.select('#all-words').property("checked");
+	var query = text.toUpperCase();
+	if (matchAllWords) {
+		// treat the query text as a set of whitespace-delimited tokens, all of which must be present
+		var textFilterTokens = textFilter.split(/\s/);
+		return textFilterTokens.every(
+			function(textFilterToken) {
+				return query.indexOf(textFilterToken) != -1
+			}
+		);
+	} else {
+		// treat the query text as a string literal which must be present
+		return query.indexOf(textFilter) != -1
+	}
 }
 
 function matchesDateFilter(period) {
