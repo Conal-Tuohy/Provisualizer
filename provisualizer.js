@@ -16,12 +16,12 @@ head.append("link")
 		
 var maxLabelLength = 80;
 var provisualizer = d3.select("#provisualizer").append("div")
-	.attr("style", "width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
+	.attr("style", "position: relative; width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 var labelFadeTime = 3000;
 var labelFadeDelay = 10000;
-
+var toolBar = null;
 var hideLabelsButton;
 
 //var helpJQueryDialog = $(help[0]);
@@ -89,6 +89,7 @@ var drag = force.drag()
 
 addSearchForm();
 addSharingTools();
+var fullScreenButton;
 addFullscreenButton();
 addEmbeddingGuide();
 addZeroResultsDialog();
@@ -96,27 +97,30 @@ addHelp();
 
 //startLabelFadeTimer();
 var zoomBehavior = d3.behavior.zoom();
-var outerSvg = provisualizer.append("svg")
+var svgContainerDiv = provisualizer.append("div");
+svgContainerDiv.attr("style", "height: 100%; box-sizing: border-box; padding-top: 150px;");
+var outerSvg = svgContainerDiv.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%") 
     		.call(zoomBehavior.on("zoom", zoom));
-var svg = outerSvg
-    	.append("g");
-	
-	
-	var linkLines = svg.selectAll(".link");
-	var nodeCircles = svg.selectAll("circle.node");	
-	var nodeLabels = svg.selectAll("text.node");
-	
-	// array of rows read from CSV (unfiltered)
-	var edges = [];
 
-	// map from node names to node attributes
-	var nodeAttributesByNodeName = {};
-	
-	// list of function names
-	var functionNames = [];
-	var uniqueFunctionNames = {};
+var svg = outerSvg
+		.append("g");
+
+
+var linkLines = svg.selectAll(".link");
+var nodeCircles = svg.selectAll("circle.node");	
+var nodeLabels = svg.selectAll("text.node");
+
+// array of rows read from CSV (unfiltered)
+var edges = [];
+
+// map from node names to node attributes
+var nodeAttributesByNodeName = {};
+
+// list of function names
+var functionNames = [];
+var uniqueFunctionNames = {};
 		
 d3.csv(
 	baseUrl + "data/nodes.csv", 
@@ -178,7 +182,7 @@ function tick() {
 		})
 		.attr("y", function(d) { return d.y; });
 	nodeLabels.classed("right-aligned", function(d) {
-			return d.x < width / 2;
+			return d.x * 2 < width;
 	});
 	nodeCircles
 		.attr("cx", function(d) { return d.x; })
@@ -284,7 +288,7 @@ function createFilteredGraphFromLinks() {
 		theta = 2 * 3.14159 * Math.sqrt(nodes.length);
 		xCentre = 0;//width * 0.5;
 		yCentre = 0;//height * 0.5;
-		r = 0.25 * Math.sqrt((width * width) + (height * height)) / (nodes.length * nodes.length);
+		r = 3 * Math.sqrt((width * width) + (height * height)) / (nodes.length * nodes.length);
 		for (var i = 0; i < nodes.length; i++) {
 			nodes[i].x = xCentre + Math.cos(theta * i) * r *  (nodes.length - i) * (nodes.length - i);
 			nodes[i].y = yCentre + Math.sin(theta* i) *  r *  (nodes.length - i) * (nodes.length - i);
@@ -407,7 +411,7 @@ function createFilteredGraphFromLinks() {
 			.on("mouseout", mouseout)
 			.on("click", jump);	
 			
-	var ticks = 20;
+	var ticks = 10;
 	var startTime = new Date().getTime();
 	for (var i = 0; i < ticks; ++i) force.tick();
 	var endTime = new Date().getTime();
@@ -436,7 +440,7 @@ function addNodeLabel(node, nodes, links) {
 
 function addFullscreenButton() {
 	if (fullscreenEnabled()) {
-		var fullScreenButton = provisualizer.append("img")
+		fullScreenButton = provisualizer.append("img")
 			.attr("id", "full-screen-button")
 			.attr("src", baseUrl + "fullscreen.png")
 			.attr("alt", "Toggle full screen")
@@ -827,7 +831,7 @@ function addSearchForm() {
 			searchPhrase = query;
 		}
 	}
-	var toolBar = provisualizer.append("div").attr("id", "toolbar");
+	toolBar = provisualizer.append("div").attr("id", "toolbar");
 	toolBar.append("h1").text("PROVISUALIZER");
 	toolBar.append("p").text("This visualization will give you a high-level view of the archives.");
 	var searchForm = toolBar.append("form");
@@ -863,13 +867,21 @@ function addSearchForm() {
 	var yearLabel = searchForm.append("label")
 		.attr("id", "year-label")
 		.attr("for", "year-filter")
-		.text("Year:");
+		.text(" Year:");
 	var yearSearch = searchForm.append("input")
 		.attr("id", "year-filter")
 		.attr("type", "text")
 		.attr("size", "4")
 		.attr("maxlength", "4")
 		.property("value", searchYear);
+	var allWordsLabel = searchForm.append("label")
+		.attr("id", "all-words-label")
+		.attr("for", "all-words")
+		.text(" Contains all words or numbers");
+	var allWords = searchForm.append("input")
+		.attr("id", "all-words")
+		.attr("type", "checkbox")
+		.attr("checked", "checked");
 	var submitButton = searchForm.append("input")
 		.attr("id", "submit")
 		.attr("type", "submit")
@@ -992,7 +1004,7 @@ function populateFunctionDropDownList() {
 function performSearch() {
 	createFilteredGraphFromLinks();
 	updateUri();
-	resetManualZoom()
+	resetManualZoom();
 }
 
 function updateUri() {
@@ -1017,16 +1029,24 @@ function getSearchFragment() {
 	function zoom() {
 		//console.log("translate: ", d3.event.translate, ", scale: ", d3.event.scale);
 		svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+		// once the user has zoomed manually, they should be able to use the 'Zoom to fit" button 
+		// reset the zoom (so that it displays the entire visualization).
+		zoomToFitButton.attr("disabled", null);
    	}
    	
    	function resetManualZoom() {
 		zoomBehavior.translate([0, 0]);
 		zoomBehavior.scale(1);
 		zoomBehavior.event(svg);	
+		// once the manual zoom is reset (and hence will be showing the entire visualization)
+		// the "zoom to fit" button does not apply until the user manually zooms again
+		zoomToFitButton.attr("disabled", "disabled");
    	}
-   	
+	
    	function zoomToFit() {
    		var bbox = svg.node().getBBox();
+   		var toolbarHeight = toolBar.node().clientHeight;
+   		var svgHeight = svg.node().getBoundingClientRect().height;
    		var viewBox = outerSvg.attr("viewBox");
 		if (viewBox == null) {
 			outerSvg.attr(
@@ -1042,13 +1062,18 @@ function getSearchFragment() {
 			var viewBoxY = parseFloat(viewBoxValues[1]);
 			var viewBoxWidth = parseFloat(viewBoxValues[2]);
 			var viewBoxHeight = parseFloat(viewBoxValues[3]);
-   			var smoothing = 20;
+			// "smoothing" is weighting given to the status quo viewbox when combining it 
+			// with a desired new viewbox. This keeps the viewbox relatively stable
+			// without jittering about due to small sub-graphs flying about in cometary orbits.
+   			var smoothing = 3; 
+   			var newY = (bbox.y + smoothing * viewBoxY) / (smoothing + 1) ;
+   			var newHeight = (bbox.height + smoothing * viewBoxHeight) / (smoothing + 1) ;
 			outerSvg.attr(
 				"viewBox", 
 				(bbox.x + smoothing * viewBoxX) / (smoothing + 1) + " " + 
-				(bbox.y + smoothing * viewBoxY) / (smoothing + 1) + " " + 
+				newY + " " + 
 				(bbox.width + smoothing * viewBoxWidth) / (smoothing + 1) + " " + 
-				(bbox.height + smoothing * viewBoxHeight) / (smoothing + 1)
+				newHeight
 			);
 		}
    	}
