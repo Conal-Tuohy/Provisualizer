@@ -874,14 +874,6 @@ function addSearchForm() {
 		.attr("size", "4")
 		.attr("maxlength", "4")
 		.property("value", searchYear);
-	var allWordsLabel = searchForm.append("label")
-		.attr("id", "all-words-label")
-		.attr("for", "all-words")
-		.text(" Contains all words or numbers");
-	var allWords = searchForm.append("input")
-		.attr("id", "all-words")
-		.attr("type", "checkbox")
-		.attr("checked", "checked");
 	var submitButton = searchForm.append("input")
 		.attr("id", "submit")
 		.attr("type", "submit")
@@ -946,20 +938,14 @@ function addSearchForm() {
 /* TODO remove all this d3 cruft from these two functions to optimize performance */
 function matchesTextFilter(text) {
 	var textFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
-	var matchAllWords = d3.select('#all-words').property("checked");
 	var query = text.toUpperCase();
-	if (matchAllWords) {
-		// treat the query text as a set of whitespace-delimited tokens, all of which must be present
-		var textFilterTokens = textFilter.split(/\s/);
-		return textFilterTokens.every(
-			function(textFilterToken) {
-				return query.indexOf(textFilterToken) != -1
-			}
-		);
-	} else {
-		// treat the query text as a string literal which must be present
-		return query.indexOf(textFilter) != -1
-	}
+	// treat the query text as a set of whitespace-delimited tokens, all of which must be present
+	var textFilterTokens = textFilter.split(/\s/);
+	return textFilterTokens.every(
+		function(textFilterToken) {
+			return query.indexOf(textFilterToken) != -1
+		}
+	);
 }
 
 function matchesDateFilter(period) {
