@@ -94,6 +94,7 @@ addFullscreenButton();
 addEmbeddingGuide();
 addZeroResultsDialog();
 addHelp();
+addKey();
 
 //startLabelFadeTimer();
 var zoomBehavior = d3.behavior.zoom();
@@ -225,6 +226,15 @@ function includeNode(nodeName, nodes, nodeIndicesByNodeName) {
 	}
 }
 
+function updateKeyItem(className, label, nodes) {
+	var filteredNodes = nodes.filter(
+		function(node) {
+			return node.type==className;
+		}
+	);
+	d3.select("#provisualizer div.key text." + className).text(label + " (" + filteredNodes.length + " shown)");
+}
+
 function createFilteredGraphFromLinks() {
 	// Extract the distinct nodes from the node relationship table.
 	
@@ -257,30 +267,11 @@ function createFilteredGraphFromLinks() {
 		}
 	);
 	
-	/*
-	// initialize node locations along a diagonal
-
-	if (nodes.length > 0) {
-		var xIncrement = width / nodes.length;
-		var yIncrement = height / nodes.length;
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].x = i * xIncrement;
-			nodes[i].y = i * yIncrement;
-		}
-	}
-	*/
-	/*
-	if (nodes.length > 0) {
-		theta = 2 * 3.14159 / nodes.length;
-		xCentre = width * 0.5;
-		yCentre = height * 0.5;
-		r = Math.sqrt((width * width) + (height * height))/ nodes.length;
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].x = xCentre + Math.random();
-			nodes[i].y = yCentre + Math.random();
-		}
-	}	
-	*/
+	// update key with hit counts
+	updateKeyItem("VPRS", "Series", nodes);
+	updateKeyItem("VA", "Agencies", nodes);
+	updateKeyItem("VF", "Functions", nodes);
+	
 	if (nodes.length == 0) {
 		showZeroResultsDialog();
 	} else {
@@ -748,6 +739,53 @@ function startLabelFadeTimer() {
 			return false;
 		}
 	);
+}
+
+function addKey() {
+	var keyWidth = 270;
+	var key = provisualizer.append("div")
+		.attr("class", "key");
+	var keySvg = key.append("svg")
+		.attr("width", keyWidth + "px")
+		.attr("height", "150px");
+
+	keySvg.append("text")
+		.attr("class", "key-heading")
+		.attr("x", (keyWidth * 0.5).toString())
+		.attr("y", "20")
+		.attr("text-anchor", "middle")
+		.text("Key");
+		
+	addKeyLine(keySvg, 20, 50, 40, 90, "Agencies create series of records");
+	addKeyLine(keySvg, 20, 130, 40, 90, "Agencies administer functions");
+	addKeyItem(keySvg, "VPRS", "Series", 20, 50);
+	addKeyItem(keySvg, "VA", "Agencies", 40, 90);
+	addKeyItem(keySvg, "VF", "Functions", 20, 130);
+}
+
+function addKeyLine(keySvg, x1, y1, x2, y2, text) {
+	keySvg.append("line")
+		.attr("class", "link")
+		.attr("x1", (x1).toString())
+		.attr("y1", (y1).toString())
+		.attr("x2", (x2).toString())
+		.attr("y2", (y2).toString())
+		.attr("title", text);
+}
+
+function addKeyItem(keySvg, className, text, x, y) {
+	var circle = keySvg.append("circle")
+		.attr("class", className + " node")
+		.attr("r", "10")
+		.attr("cx", (x).toString())
+		.attr("cy", (y).toString())
+		.attr("style", "fill-opacity: 0.5")
+		.attr("title", text);
+	var seriesLabel = keySvg.append("text")
+		.attr("class", className + " key-node-label")
+		.attr("x", (x + 15).toString())
+		.attr("y", (y + 6).toString())
+		.text(text);
 }
 
 function addEmbeddingGuide() {
