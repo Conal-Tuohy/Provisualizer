@@ -103,6 +103,7 @@
 	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	-webkit-overflow-scrolling: touch;
 }
 #provisualizer #embedding-guide {
   width: 36em;
