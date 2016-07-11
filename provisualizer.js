@@ -243,17 +243,39 @@ function createFilteredGraphFromLinks() {
 	var links = [];
 	// map from node names to node array indices
 	var nodeIndicesByNodeName = {};
+
+	var textFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
+	var matchWholeWords = d3.select('#whole-words').property("checked");
+	// treat the query text as a set of whitespace-delimited tokens, all of which must be present
+	var textFilterTokens = textFilter.split(/\s/);
 	
 	edges.forEach(
 		function(edge) {
 			var sourcePeriod = nodeAttributesByNodeName[edge.SOURCE].PERIOD;
 			var targetPeriod = nodeAttributesByNodeName[edge.TARGET].PERIOD;
+			var edgeText = " " + (edge.SOURCE + " " + edge.TARGET).toUpperCase() + " ";
 			if (
-				// TODO check the criteria for inclusion. Currently both nodes must have matching dates,
-				// and one node must have matching text.
+				// both nodes in the edge must match the date filter
+				// the combined text of both nodes must match all the search tokens
 				matchesDateFilter(sourcePeriod) &&
 				matchesDateFilter(targetPeriod) &&
-				(matchesTextFilter(edge.SOURCE + " " + edge.TARGET))
+				textFilterTokens.every(
+					function(textFilterToken) {
+						index = edgeText.indexOf(textFilterToken);
+						if (index != -1) {
+							if (matchWholeWords) {
+								// token was found, check if the match is a whole word
+								var startsWord =/\s/.test(edgeText.charAt(index - 1));
+								var endsWord = /\s/.test(edgeText.charAt(index + textFilterToken.length));
+								return startsWord && endsWord;
+							} else { // token was found, match-whole-words not checked - that counts as a match
+								return true;
+							}
+						} else {
+							return false;
+						}
+					}
+				)
 			) {
 				includeNode(edge.SOURCE, nodes, nodeIndicesByNodeName);
 				includeNode(edge.TARGET, nodes, nodeIndicesByNodeName);
@@ -844,6 +866,7 @@ function addSearchForm() {
 	// default search is for "soil", in no particular year
 	var searchPhrase = "soil";
 	var searchYear = "";
+	var wholeWords = "";
 	
 	// default is overridden by parameters in the html (i.e. an embedded provisualizer can specify a different default)
 	var fragment;
@@ -859,11 +882,15 @@ function addSearchForm() {
 	if (fragment) {
 		// trim the leading # and decode the fragment identifier
 		var query = decodeURIComponent(fragment);
-		var delimiter = query.indexOf("_");
-		if (delimiter != -1) {
-			// contains a phrase AND a year
-			searchPhrase = query.substring(0, delimiter);
-			searchYear = query.substring(delimiter + 1);
+		var queryFields = query.split(/_/);
+		if (queryFields.length >= 1) {
+			searchPhrase = queryFields[0];
+			if (queryFields.length >= 2) {
+				searchYear = queryFields[1];
+				if (queryFields.length >= 3) {
+					wholeWords = queryFields[2];
+				}
+			}
 		} else {
 			// just a phrase
 			searchPhrase = query;
@@ -882,6 +909,15 @@ function addSearchForm() {
 		.attr("type", "text")
 		.attr("size", "20")
 		.property("value", searchPhrase);
+	var wholeWordsLabel = searchForm.append("label")
+		.attr("for", "whole-words")
+		.text("Whole words");
+	var wholeWordsCheckbox = searchForm.append("input")
+		.attr("id", "whole-words")
+		.attr("type", "checkbox");
+	if (wholeWords == "words") {
+		wholeWordsCheckbox.attr("checked", "checked");
+	}
 	var functionListLabel = searchForm.append("label")
 		.attr("id", "function-list-label")
 		.attr("for", "function-list")
@@ -973,18 +1009,6 @@ function addSearchForm() {
 	return searchForm;
 }
 
-/* TODO remove all this d3 cruft from these two functions to optimize performance */
-function matchesTextFilter(text) {
-	var textFilter = d3.select('#agency-or-function-name-filter').property("value").toUpperCase();
-	var query = text.toUpperCase();
-	// treat the query text as a set of whitespace-delimited tokens, all of which must be present
-	var textFilterTokens = textFilter.split(/\s/);
-	return textFilterTokens.every(
-		function(textFilterToken) {
-			return query.indexOf(textFilterToken) != -1
-		}
-	);
-}
 
 function matchesDateFilter(period) {
 	var yearFilterText = d3.select('#year-filter').property("value");
@@ -1050,14 +1074,15 @@ function updateUri() {
 }	
 
 function getSearchFragment() {
-	var textSearch = d3.select("#agency-or-function-name-filter");
-	var yearSearch = d3.select("#year-filter");
-	searchPhrase = textSearch.property("value");
-	searchYear = yearSearch.property("value");
-	if (searchYear == "") {
-		 return encodeURIComponent(searchPhrase);
+	// the URI fragment contains the search phrase, and if specified, a year, and whether "whole words" is checked
+	// each part delimited by an underscore
+	var textSearch = d3.select("#agency-or-function-name-filter").property("value");
+	var yearSearch = d3.select("#year-filter").property("value");
+	var wholeWords = d3.select("#whole-words").property("checked");
+	if (yearSearch == "" && !wholeWords) {
+		 return encodeURIComponent(textSearch);
 	} else {
-		return encodeURIComponent(searchPhrase + "_" + searchYear);
+		return encodeURIComponent(textSearch + "_" + yearSearch + "_" + (wholeWords ? "words" : ""));
 	}
 }
 	
