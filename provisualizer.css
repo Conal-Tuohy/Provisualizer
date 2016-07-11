@@ -140,6 +140,7 @@
 #provisualizer #sharing-toolbox {
 	z-index: 110;
   width: 20em;
+  height: 11em;
   overflow: auto;
   margin: auto;
   position: absolute;
