@@ -929,7 +929,11 @@ function addSearchForm() {
 		.text("Whole words");
 	var wholeWordsCheckbox = searchForm.append("input")
 		.attr("id", "whole-words")
-		.attr("type", "checkbox");
+		.attr("type", "checkbox")
+		.attr("class", "default"); // defeat "JCF - JavaScript Custom Forms"
+		// JCF would otherwise replace this select element with another one that may or may not work
+		// JCF used on PROV's Drupal-based website.
+		// NB similar problems are always possible on other sites.
 	if (wholeWords == "words") {
 		wholeWordsCheckbox.attr("checked", "checked");
 	}
