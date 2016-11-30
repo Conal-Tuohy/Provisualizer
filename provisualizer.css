@@ -21,7 +21,22 @@
 	padding: 0;
 	background-color: white;
 	font-family: 'PT Sans', sans-serif;
+	font-size: 10pt;
 /*	overflow: hidden;*/
+}
+#provisualizer input[type="submit"],
+#provisualizer input[type="button"],
+#provisualizer button
+{
+	background-color: ButtonFace !important;
+	color: ButtonText !important;
+/*
+padding: 0 !important;
+*/
+}
+#provisualizer input,
+#provisualizer select {
+	font-size: 10pt;
 }
 #share-button {
 	position: absolute;
