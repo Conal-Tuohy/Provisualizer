@@ -891,8 +891,11 @@ function addSearchForm() {
 	}
 	
 	// URI fragment ("hash") overrides default again
+	// FIXME startsWith('more-') is a crude hack to exclude fragments created by WordPress's "more" links 
 	if (window.location.hash != "") {
-		fragment = window.location.hash.substring(1);
+		if (! window.location.hash.startsWith('#more-')) {
+			fragment = window.location.hash.substring(1);
+		}
 	}
 	if (fragment) {
 		// trim the leading # and decode the fragment identifier
