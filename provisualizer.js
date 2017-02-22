@@ -619,11 +619,12 @@ function shareByEmbedding() {
 function updateEmbeddingCode() {
 	/*
 	e.g.
-	<div id="provisualizer" style="width: 700px; height:900px; border: 1px solid black;">
-		<div id="embed-search">fish</div>
-		<script src="http://d3js.org/d3.v3.min.js"></script>
-		<script id="provisualizer-script" src="http://conaltuohy.com/clients/prov/provisualizer/provisualizer.js"></script>
-	</div>
+<div id='provisualizer' style='width: 800px; height: 500px; border: 1px solid black;'>
+   <div id='embed-search'>soil</div>
+   <script src='https://d3js.org/d3.v3.min.js'></script>
+   <script id='provisualizer-script' src='https://prov-data.prov.vic.gov.au/Provisualizer/provisualizer.js'>
+   </script>
+</div>
 	*/	
 	var embeddingCode = "<div id='provisualizer' style='width: "
 		+ d3.select("#embedding-width").property("value")
@@ -631,7 +632,7 @@ function updateEmbeddingCode() {
 		+ d3.select("#embedding-height").property("value")
 		+ "; border: 1px solid black;'>\n"
 		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
-		+ "   <script src='http://d3js.org/d3.v3.min.js'></script>\n"
+		+ "   <script src='https://d3js.org/d3.v3.min.js'></script>\n"
 		+ "   <script id='provisualizer-script' src='" 
 		+ baseUrl 
 		+ "provisualizer.js'>\n"
