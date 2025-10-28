@@ -74,17 +74,13 @@ padding: 0 !important;
 	height: 11em;
 	font-size: 10pt;
 }
-#provisualizer div.help div.titlebar {
-	cursor: move;
+#provisualizer dialog.help div.titlebar {
 	height: 24px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #AAAAAA;
 	padding: 5px;
 	margin: 3px;
-	background-image: linear-gradient(#E0E0E0, #CCCCCC);
+	background-color: #f9e53c;
 	font-weight: bold;
-	font-size: 22px;
+	font-size: 20px;
 	position: relative;
 }
 

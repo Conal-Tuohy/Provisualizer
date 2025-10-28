@@ -652,30 +652,41 @@ function showSharingToolbox() {
 		d3.select("#sharing-toolbox").classed("hidden", false);
 }
 function showHelp() {
-	d3.select("#provisualizer .help").classed("hidden", false);
-	d3.select("#show-help").attr("disabled", "disabled");
+	document.querySelector("#provisualizer .help").showModal();
 }
-
-function hideHelp() {
-	d3.select("#provisualizer .help").classed("hidden", true);
-	d3.select("#show-help").attr("disabled", null);
+function closeHelp() {
+	document.querySelector("#provisualizer .help").close();
 }
 
 function addHelp() {
-	var help = provisualizer.append("div");
+	let help = provisualizer.append("dialog")
+		.attr("class", "help")
+		.attr("closedBy", "any");
+	let header = help
+		.append("header")
+	let titleBar = header.append("div")
+		.attr("class", "titleBar")
+		.text("Need Help?")
+	let closeButton = titleBar
+		.append("img")
+			.attr("class", "close-button")
+			.attr("src", baseUrl + "close.png")
+			.attr("alt", "Close")
+			.attr("title", "Close")
+			.on("click", closeHelp)
+/*
 	help.classed("help", true);
 	help.classed("hidden", true);
 	help.style(
 		{
 			"left": "50px",
 			"top": "50px"
-			/*,
-			"width": "700px",
-			"height": "350px"
-			*/
+			//"width": "700px",
+			//"height": "350px"
 		}
 	);
-	var titleBar = help.append("div");
+*/
+/*	var titleBar = help.append("div");
 	titleBar.classed("titlebar", true);
 	titleBar.text("Need Help?");
 	titleBar.append("img")
@@ -686,7 +697,8 @@ function addHelp() {
 			.on("click", hideHelp);
 	var dialogPanel = help.append("div");
 	dialogPanel.classed("panel", true);
-	var helpContent = dialogPanel.append("iframe")
+	*/
+	var helpContent = help.append("iframe")
 		.attr("src", baseUrl + "help.html");
 	/*
 	var helpContent = dialogPanel.append("div");
@@ -698,42 +710,6 @@ function addHelp() {
 		}
 	);
 	*/
-	
-	var helpDrag = d3.behavior.drag();
-	helpDrag.origin(
-		function() {
-			return {
-				"x": provisualizer.node().offsetLeft,
-				"y": provisualizer.node().offsetTop
-			}
-		}
-	);
-	helpDrag.on(
-		"drag", 
-		function(d, i) {
-			// TODO constrain to fit within visualization?
-			var left = help.node().offsetLeft + d3.event.dx;
-			var top = help.node().offsetTop + d3.event.dy;
-			help.style(
-				{
-					"left": left + "px",
-					"top": top + "px"
-				}
-			);
-		}
-	);
-	titleBar.on(
-		"mousedown",
-		function() {
-			help.call(helpDrag);
-		}
-	);
-	titleBar.on(
-		"mouseup", 
-		function() {
-			help.on(".drag", null);
-		}
-	);
 }
 
 function startLabelFadeTimer() {
