@@ -1,15 +1,13 @@
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <title>PROVisualizer</title>
-<!--
-<link rel="stylesheet" type="text/css" href="provisualizer.css">
--->
 <style type="text/css">
 #provisualizer {
 	margin: 0;
-	width: 100%;
-	height: 100%;
+	height: 100vh; /* Sets height to 100% of the viewport height */
+  	width: 100vw;  /* Sets width to 100% of the viewport width */
 }
 body {
 	padding: 0;
@@ -21,8 +19,12 @@ body {
 <body>
 <div id="provisualizer">
 <div id="embed-search"></div>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="provisualizer.js" id="provisualizer-script"></script>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<!-- 
+NB the URL below must be an absolute URL pointing to the js file, in the same folder that
+contains the CSV data file
+-->
+<script src="https://prov.conaltuohy.com/Provisualizer/provisualizer.js" id="provisualizer-script"></script>
 </div>
 </body>
 </html>

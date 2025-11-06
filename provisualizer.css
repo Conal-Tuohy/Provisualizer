@@ -35,6 +35,8 @@
 	border-color: black;
 	padding: 10px;
 	background-color: rgba(255,255,255,0.7);
+	width: 200px;
+	height: 150px;
 	max-width: 30%;
 	max-height: 30%;
 	aspect-ratio: 270 / 150;
