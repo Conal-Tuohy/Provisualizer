@@ -1,39 +1,96 @@
 @import url(https://fonts.googleapis.com/css?family=PT+Sans:400,700);
+/*
 #provisualizer *:before, 
 #provisualizer *:after {
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
 }
-#provisualizer div.popup {
-	position: absolute;
-	display: none;
-	background-color: yellow;
-	border-color: black;
-	border-style: solid;
-	border-width: 1px;
-	z-index: 1;
-	width: 100px;
-	height: 100px;
-}
+*/
 #provisualizer {
+	container-type: size;
+	container-name: provisualizer;
+	box-sizing: border-box;
 	position: relative;
 	padding: 0;
 	background-color: white;
 	font-family: 'PT Sans', sans-serif;
 	font-size: 10pt;
-/*	overflow: hidden;*/
 }
+#provisualizer-help {
+	padding: 0;
+	background-color: #f9e53c;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 10pt;
+
+}
+
+#provisualizer .key {
+	z-index: 100;
+	position: absolute;
+	/*top: 200px;*/
+	/*left: 20px;*/
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	padding: 10px;
+	background-color: rgba(255,255,255,0.7);
+	max-width: 30%;
+	max-height: 30%;
+	aspect-ratio: 270 / 150;
+}
+
+
+#provisualizer .key text.key-heading {
+	fill: black;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+#provisualizer .key text.key-node-label {
+	fill: black;
+	font-size: 20px;
+	font-weight: normal;
+}
+#provisualizer .key text.key-line-label {
+	fill: black;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+@container provisualizer (orientation: landscape) {
+	/* Styles for landscape orientation */
+
+	/* the key or legend */
+	.key {
+  		top: 50%;
+  		transform: translateY(-50%); /* Adjusts for the item's own height */
+		left: 0;
+		margin-left: 2em;
+	}
+}
+@container provisualizer (orientation: portrait) {
+	/* Styles for landscape orientation */
+
+	/* the key or legend */
+	.key {
+		bottom: 0;
+		margin-bottom: 2em;
+		left: 50%;
+  		transform: translateX(-50%); /* Adjusts for the item's own height */
+	}
+}
+
 #provisualizer input[type="submit"],
 #provisualizer input[type="button"],
+/*
 #provisualizer button
 {
 	background-color: ButtonFace !important;
 	color: ButtonText !important;
-/*
-padding: 0 !important;
-*/
+	padding: 0 !important;
 }
+*/
 #provisualizer input,
 #provisualizer select {
 	font-size: 10pt;
@@ -63,67 +120,75 @@ padding: 0 !important;
 	display: none;
 }
 
-.hidden {
-	display: none;
-}
-#provisualizer #sharing-toolbox h1 {
-	font-size: 12pt;
-}
 #embedding-code {
 	width: 35em;
 	height: 11em;
 	font-size: 10pt;
 }
-#provisualizer dialog.help div.titlebar {
-	height: 24px;
-	padding: 5px;
-	margin: 3px;
+
+#provisualizer dialog {
 	background-color: #f9e53c;
-	font-weight: bold;
-	font-size: 20px;
-	position: relative;
+	max-width: 80%; 
+	max-height: 80%; 
 }
 
- #provisualizer iframe {
+#provisualizer dialog.help {
+	width: 50em; /* ... but only up to max-width */
+	height: 50em; /* ... but only up to max-height */
+}
+
+#provisualizer-help {
+	background-color: #f9e53c;
+}
+
+#provisualizer dialog header {
+	display: flex;
+	justify-content: space-between;
+	margin: 0;
+}
+
+#provisualizer dialog header h1 {
+	font-weight: bold;
+	font-size: 28px;
+	display: inline-flex;
+	margin: 0;
+}
+
+#provisualizer dialog header button {
+  display: inline; /* Makes the button behave like an inline element */
+  padding: 0; /* Removes default padding */
+  border: 0; /* Removes default border */
+  font: inherit; /* Inherits font styles from its parent */
+  cursor: pointer; /* Changes cursor to a pointer on hover */
+	background-color: #f9e53c;
+	/*align-self: self-start;*/
+  color: currentColor; /* Inherits text color from its parent */
+}
+
+ #provisualizer dialog iframe {
  	 border-width: 0;
  	 margin: 0;
- 	 padding: 0;
+	 padding-left: 0;
+	 padding-right: 0;
+	 padding-top: 0;
+ 	 padding-bottom: 1em;
  	 height: 100%;
  	 width: 100%;
+	 overflow-y: scroll;
  }
-#provisualizer div.help div.panel {
-	
-	
-	/*top: 0;position: absolute;height: 100%;padding-top: 40px;background-color: yellow;*/
-	height: 358px;
-	margin: 0;
-	
-	
- }
+
 #provisualizer div.help {
-	background-color: white;
-	z-index:200; 
-	width: 36em;
-	height: 400px;
-	position: absolute;
+	background-color: #f9e53c;
 	padding: 0px;
 	overflow:auto;
-  /*top: 0; left: 0; bottom: 0; right: 0;*/
-  
-	border: 1px solid black;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	-webkit-overflow-scrolling: touch;
 }
-#provisualizer #embedding-guide {
+#provisualizer .embedding-guide {
   width: 36em;
   height: 17em;
   overflow: auto;
   margin: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
-  background-color: white;
   text-align:center;
   
 	border: 1px solid black;
@@ -132,22 +197,7 @@ padding: 0 !important;
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
-#provisualizer #zero-results-dialog {
-	  width: 20em;
-  height: 11em;
-  overflow: auto;
-  margin: auto;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background-color: white;
-  text-align:center;
-  
-	border: 1px solid black;
-	padding: 10px;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-}
+
 #provisualizer #sharing-toolbox {
 	z-index: 110;
   width: 20em;
@@ -165,33 +215,7 @@ padding: 0 !important;
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
-#provisualizer div.key {
-	z-index: 100;
-	position: absolute;
-	top: 200px;
-	left: 20px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
-	padding: 10px;
-	background-color: rgba(255,255,255,0.7);
-}
 
-#provisualizer div.key text.key-heading {
-	fill: black;
-	font-size: 20px;
-	font-weight: bold;
-}
-#provisualizer div.key text.key-node-label {
-	fill: black;
-	font-size: 20px;
-	font-weight: normal;
-}
-#provisualizer div.key text.key-line-label {
-	fill: black;
-	font-size: 14px;
-	font-weight: normal;
-}
 #provisualizer #toolbar {
 	background-color: white;
 	text-align: center;
@@ -208,14 +232,14 @@ padding: 0 !important;
 	margin: 3px;
 }
 #provisualizer form {
+	width: auto;
+	padding: 10px;
+	margin: 0;
 	/*
 	position: absolute;
 	left: 0;
 	top: 0;
 	*/
-	width: auto;
-	padding: 10px;
-	margin: 0;
 	/*
 	border: 1px solid black;
 	font-family: sans-serif;
@@ -227,9 +251,6 @@ padding: 0 !important;
 	*/
 }
 
-#provisualizer select {	
-
-}
 #provisualizer input {
 	width: auto;
 	margin-left: 5px;
@@ -245,7 +266,6 @@ padding: 0 !important;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
 }
-
 
 #provisualizer .link {
   stroke: #CCCCCC;
@@ -306,14 +326,6 @@ circle.VA {
 #provisualizer text.label.selected {
 	visibility: visible;
 }
-#provisualizer text.function {
-/*	font-size: 16px;*/
-}
-
-#provisualizer text.VA {
-/*	font-size: small;*/
-}
-
 
 /* Social media links - based on https://github.com/mattberridge/Simple-Social-Sharing-Buttons */
 

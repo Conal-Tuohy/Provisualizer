@@ -312,7 +312,6 @@ function createFilteredGraphFromLinks() {
 	if (nodes.length == 0) {
 		showZeroResultsDialog();
 	} else {
-		hideZeroResultsDialog();
 		theta = 2 * 3.14159 * Math.sqrt(nodes.length);
 		xCentre = 0;//width * 0.5;
 		yCentre = 0;//height * 0.5;
@@ -526,50 +525,26 @@ function exitFullscreen() {
 }
 
 function addZeroResultsDialog() {
-	var zeroResultsDialog = provisualizer.append("div")
-		.attr("id", "zero-results-dialog")
-		.classed("hidden", "true");
-	zeroResultsDialog.append("img")
-		.attr("class", "close-button")
-		.attr("src", baseUrl + "close.png")
-		.attr("alt", "Close")
-		.attr("title", "Close")
-		.on("click", hideZeroResultsDialog);
-	zeroResultsDialog.append("h1")
-		.text("No matches found");
+	var zeroResultsDialog = createDialog("No matches found", "zero-results-dialog");
 	zeroResultsDialog.append("p")
 		.text("Your search turned up no results, please try again with a broader search.");
 }
 
 function showZeroResultsDialog() {
-	d3.select("#zero-results-dialog").classed("hidden", false);
-}
-
-function hideZeroResultsDialog() {
-	d3.select("#zero-results-dialog").classed("hidden", true);
+	document.querySelector("#provisualizer .zero-results-dialog").showModal();
 }
 
 function addSharingTools() {
-		var shareButton = provisualizer.append("img")
+		let shareButton = provisualizer.append("img")
 			.attr("id", "share-button")
 			.attr("src", baseUrl + "share.png")
 			.attr("alt", "Share")
 			.attr("title", "Share")
-			.on("click", toggleSharingToolbox);
+			.on("click", showSharingToolbox);
 			
-		var sharingToolbox = provisualizer.append("div")
-			.attr("id", "sharing-toolbox")
-			.classed("hidden", true);
+		let sharingToolbox = createDialog("Share your search", "sharing-toolbox");
 		// <a href="https://www.facebook.com/sharer/sharer.php?u={url}">Share on Facebook</a>
-		sharingToolbox.append("img")
-			.attr("class", "close-button")
-			.attr("src", baseUrl + "close.png")
-			.attr("alt", "Close")
-			.attr("title", "Close")
-			.on("click", hideSharingToolbox);
 			
-		sharingToolbox.append("h1")
-			.text("Share your search");
 		var shareList = sharingToolbox.append("ul")
 			.attr("class", "ss-share");
 			
@@ -592,7 +567,7 @@ function shareOnFacebook() {
 	var search = d3.select('#agency-or-function-name-filter').property("value");
 	var URL = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(window.location);
 	window.open(URL, "Share");
-	hideSharingToolbox();
+	closeSharingToolbox();
 }
 function shareOnTwitter() {
 	var search = d3.select('#agency-or-function-name-filter').property("value");
@@ -600,7 +575,7 @@ function shareOnTwitter() {
 	var URL = "https://twitter.com/home?status=" + encodeURIComponent(tweet);
 	console.log(URL);
 	window.open(URL, "Share");
-	hideSharingToolbox();
+	closeSharingToolbox();
 }
 function shareByEmail() {
 	var search = d3.select('#agency-or-function-name-filter').property("value");
@@ -609,12 +584,12 @@ function shareByEmail() {
 	var URL = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
 	console.log(URL);
 	window.open(URL);
-	hideSharingToolbox();
+	closeSharingToolbox();
 }
 function shareByEmbedding() {
-	var embeddingGuide = d3.select("#embedding-guide").classed("hidden", false);
+	var embeddingGuide = document.querySelector("#provisualizer .embedding-guide").showModal();
 	updateEmbeddingCode();
-	hideSharingToolbox();
+	closeSharingToolbox();
 }
 function updateEmbeddingCode() {
 	/*
@@ -641,15 +616,11 @@ function updateEmbeddingCode() {
 	var embeddingCodeWidget = d3.select("#embedding-code");
 	embeddingCodeWidget.text(embeddingCode);
 }
-function toggleSharingToolbox() {
-	var toolbox = d3.select("#sharing-toolbox");
-	toolbox.classed("hidden", !(toolbox.classed("hidden")));
-}
-function hideSharingToolbox() {
-	d3.select("#sharing-toolbox").classed("hidden", true);
+function closeSharingToolbox() {
+	document.querySelector("#provisualizer .sharing-toolbox").close();
 }
 function showSharingToolbox() {
-		d3.select("#sharing-toolbox").classed("hidden", false);
+	document.querySelector("#provisualizer .sharing-toolbox").showModal();
 }
 function showHelp() {
 	document.querySelector("#provisualizer .help").showModal();
@@ -658,22 +629,26 @@ function closeHelp() {
 	document.querySelector("#provisualizer .help").close();
 }
 
-function addHelp() {
-	let help = provisualizer.append("dialog")
-		.attr("class", "help")
+/*
+	Create a modal dialog box with a title and a class attribute
+*/
+function createDialog(title, dialogClass) {
+	let dialog = provisualizer.append("dialog")
+		.attr("class", dialogClass)
 		.attr("closedBy", "any");
-	let header = help
-		.append("header")
-	let titleBar = header.append("div")
-		.attr("class", "titleBar")
-		.text("Need Help?")
-	let closeButton = titleBar
-		.append("img")
-			.attr("class", "close-button")
-			.attr("src", baseUrl + "close.png")
-			.attr("alt", "Close")
-			.attr("title", "Close")
-			.on("click", closeHelp)
+	let header = dialog.append("header");
+	header.append("h1").text(title);
+	header.append("button")
+		.attr("title", "Close")
+		.attr("class", "close-button")
+		.on("click", function() {dialog.node().close()})
+		.text("❌︎ Close");
+	return dialog;
+}
+
+function addHelp() {
+	let help = createDialog("Need Help?", "help");
+	
 /*
 	help.classed("help", true);
 	help.classed("hidden", true);
@@ -756,18 +731,16 @@ function startLabelFadeTimer() {
 }
 
 function addKey() {
-	var keyWidth = 270;
-	var key = provisualizer.append("div")
-		.attr("class", "key");
-	var keySvg = key.append("svg")
+	var keyWidth = 200;
+	var keySvg = provisualizer.append("svg")
+		.attr("class", "key")
 		.attr("width", keyWidth + "px")
 		.attr("height", "150px");
 
 	keySvg.append("text")
 		.attr("class", "key-heading")
-		.attr("x", (keyWidth * 0.5).toString())
+		.attr("x", "0")
 		.attr("y", "20")
-		.attr("text-anchor", "middle")
 		.text("Key");
 		
 	addKeyLine(keySvg, 20, 50, 40, 90, "Agencies create series of records");
@@ -803,16 +776,7 @@ function addKeyItem(keySvg, className, text, x, y) {
 }
 
 function addEmbeddingGuide() {
-	var embeddingGuide = provisualizer.append("div")
-		.attr("id", "embedding-guide")
-		.classed("hidden", "true");
-	embeddingGuide.append("h1").attr("id", "embedding-guide-heading");
-	embeddingGuide.append("img")
-			.attr("class", "close-button")
-			.attr("src", baseUrl + "close.png")
-			.attr("alt", "Close")
-			.attr("title", "Close")
-			.on("click", hideEmbeddingGuide);
+	var embeddingGuide = createDialog("Embed PROVisualizer", "embedding-guide");
 	embeddingGuide.append("p").text("Copy and paste this code into the website where you want to embed this visualization");
 	embeddingGuide.append("textarea")
 		.attr("id", "embedding-code")
@@ -840,10 +804,6 @@ function addEmbeddingGuide() {
 		.attr("size", "6")
 		.property("value", "500px")
 		.on("input", updateEmbeddingCode);
-}
-
-function hideEmbeddingGuide() {
-	d3.select("#embedding-guide").classed("hidden", true);
 }
 
 function getSearchTitle() {
