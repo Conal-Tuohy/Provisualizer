@@ -223,7 +223,8 @@ function dragstart(d) {
 }
 
 function jump(d) {
-	window.open(d.URL, d.name);
+	window.open(d.URL, "_self");
+	// window.open(d.URL, d.name);
 }
 
 function includeNode(nodeName, nodes, nodeIndicesByNodeName) {
