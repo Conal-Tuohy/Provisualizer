@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-var script = d3.select('#provisualizer-script').attr('src');
+var script = document.currentScript.src; //d3.select('#provisualizer-script').attr('src');
 var baseUrl = script.substring(0, script.lastIndexOf('provisualizer.js'));
 if (baseUrl == "") {
 	baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + "/";
@@ -247,7 +247,7 @@ function updateKeyItem(className, label, nodes) {
 			return node.type==className;
 		}
 	);
-	d3.select("#provisualizer div.key text." + className).text(label + " (" + filteredNodes.length + " shown)");
+	d3.select("#provisualizer .key text." + className).text(label + " (" + filteredNodes.length + " shown)");
 }
 
 function createFilteredGraphFromLinks() {
@@ -734,9 +734,7 @@ function addKey() {
 	var keyWidth = 200;
 	var keySvg = provisualizer.append("svg")
 		.attr("class", "key")
-		.attr("width", keyWidth + "px")
-		.attr("height", "150px");
-
+		.attr("viewBox", "0 0 200 150");
 	keySvg.append("text")
 		.attr("class", "key-heading")
 		.attr("x", "0")
