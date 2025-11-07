@@ -731,10 +731,9 @@ function startLabelFadeTimer() {
 }
 
 function addKey() {
-	var keyWidth = 200;
 	var keySvg = provisualizer.append("svg")
 		.attr("class", "key")
-		.attr("viewBox", "0 0 200 150");
+		.attr("viewBox", "0 0 270 150");
 	keySvg.append("text")
 		.attr("class", "key-heading")
 		.attr("x", "0")
