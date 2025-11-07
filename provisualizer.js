@@ -852,20 +852,24 @@ function addSearchForm() {
 	toolBar = provisualizer.append("div").attr("id", "toolbar");
 	toolBar.append("h1").text("PROVISUALIZER");
 	toolBar.append("p").text("This visualization will give you a high-level view of the archives.");
-	var searchForm = toolBar.append("form");
-	var labelSearch = searchForm.append("label")
+	let searchForm = toolBar.append("form");
+	let inputsFieldSet = searchForm.append("fieldset")
+		.attr("class", "inputs");
+	let searchFieldSet = inputsFieldSet.append("fieldset");
+	let labelSearch = searchFieldSet.append("label")
 		.attr("id", "agency-or-function-name-label")
 		.attr("for", "agency-or-function-name-filter")
 		.text("Enter a keyword:");
-	var textSearch = searchForm.append("input")
+	let textSearch = searchFieldSet.append("input")
 		.attr("id", "agency-or-function-name-filter")
 		.attr("type", "text")
 		.attr("size", "20")
 		.property("value", searchPhrase);
-	var wholeWordsLabel = searchForm.append("label")
+	let wholeWordsFieldSet = inputsFieldSet.append("fieldset");
+	let wholeWordsLabel = wholeWordsFieldSet.append("label")
 		.attr("for", "whole-words")
 		.text("Whole words");
-	var wholeWordsCheckbox = searchForm.append("input")
+	let wholeWordsCheckbox = wholeWordsFieldSet.append("input")
 		.attr("id", "whole-words")
 		.attr("type", "checkbox")
 		.attr("class", "default"); // defeat "JCF - JavaScript Custom Forms"
@@ -875,11 +879,12 @@ function addSearchForm() {
 	if (wholeWords == "words") {
 		wholeWordsCheckbox.attr("checked", "checked");
 	}
-	var functionListLabel = searchForm.append("label")
+	let functionListFieldSet = inputsFieldSet.append("fieldset");
+	let functionListLabel = functionListFieldSet.append("label")
 		.attr("id", "function-list-label")
 		.attr("for", "function-list")
 		.text("... or select a function: ");
-	var functionList = searchForm.append("select")
+	let functionList = functionListFieldSet.append("select")
 		.attr("id", "function-list")
 		.attr("class", "default") // defeat "JCF - JavaScript Custom Forms"
 		// JCF would otherwise replace this select element with another one that may or may not work
@@ -894,18 +899,23 @@ function addSearchForm() {
 				functionList.property("value", "(select)");
 				performSearch();
 			}
-		);		
-	var yearLabel = searchForm.append("label")
+		);
+	let yearFieldSet = inputsFieldSet.append("fieldset");
+	let yearLabel = yearFieldSet.append("label")
 		.attr("id", "year-label")
 		.attr("for", "year-filter")
 		.text(" Year:");
-	var yearSearch = searchForm.append("input")
+	let yearSearch = yearFieldSet.append("input")
 		.attr("id", "year-filter")
 		.attr("type", "text")
 		.attr("size", "4")
 		.attr("maxlength", "4")
 		.property("value", searchYear);
-	var submitButton = searchForm.append("input")
+
+	let buttonFieldSet = searchForm.append("fieldset")
+		.attr("class", "buttons");
+	
+	let submitButton = buttonFieldSet.append("input")
 		.attr("id", "submit")
 		.attr("type", "submit")
 		.property("value", "Search");
@@ -919,8 +929,8 @@ function addSearchForm() {
 				performSearch();
 			}
 		);
-		
-	hideLabelsButton = searchForm.append("input")
+	
+	let hideLabelsButton = buttonFieldSet.append("input")
 		.attr("id", "hide-labels")
 		.attr("type", "submit")
 		.attr("disabled", "disabled")
@@ -936,7 +946,7 @@ function addSearchForm() {
 		}
 	);
 	
-	showHelpButton = searchForm.append("input")
+	let showHelpButton = buttonFieldSet.append("input")
 		.attr("id", "show-help")
 		.attr("type", "submit")
 		.property("value", "Show Help");
@@ -950,7 +960,7 @@ function addSearchForm() {
 		}
 	);
 	
-	zoomToFitButton = searchForm.append("input")
+	let zoomToFitButton = buttonFieldSet.append("input")
 		.attr("type", "submit")
 		.property("value", "Zoom to fit");
 		
