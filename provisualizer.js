@@ -30,14 +30,25 @@ head.append("link")
 	.attr('rel', 'stylesheet');
 		
 var maxLabelLength = 80;
-var provisualizer = d3.select("#provisualizer").append("div")
-	.attr("style", "position: relative; width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
+var provisualizer = d3.select("#provisualizer");
+//.append("div")
+//	.attr("style", "position: relative; width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
 var width = provisualizer.node().offsetWidth; 
 var height = provisualizer.node().offsetHeight; 
 var labelFadeTime = 3000;
 var labelFadeDelay = 10000;
 var toolBar = null;
 var hideLabelsButton;
+addSearchForm();
+var svgContainerDiv = provisualizer.append("div")
+	.attr("class", "svgContainer");
+addSharingTools();
+var fullScreenButton;
+addFullscreenButton();
+addEmbeddingGuide();
+addZeroResultsDialog();
+addHelp();
+addKey();
 
 //var helpJQueryDialog = $(help[0]);
 //helpJQueryDialog.css("overflow-y:auto; overflow-x:hidden; z-index:200");
@@ -102,19 +113,9 @@ var force = d3.layout.force()
 var drag = force.drag()
 	.on("dragstart", dragstart);
 
-addSearchForm();
-addSharingTools();
-var fullScreenButton;
-addFullscreenButton();
-addEmbeddingGuide();
-addZeroResultsDialog();
-addHelp();
-addKey();
 
 //startLabelFadeTimer();
 var zoomBehavior = d3.behavior.zoom();
-var svgContainerDiv = provisualizer.append("div");
-svgContainerDiv.attr("style", "height: 100%; box-sizing: border-box; padding-top: 150px;");
 var outerSvg = svgContainerDiv.append("svg")
 	.attr("width", "100%")
 	.attr("height", "100%") 
@@ -732,7 +733,7 @@ function startLabelFadeTimer() {
 }
 
 function addKey() {
-	var keySvg = provisualizer.append("svg")
+	var keySvg = svgContainerDiv.append("svg")
 		.attr("class", "key")
 		.attr("viewBox", "0 0 270 150");
 	keySvg.append("text")

@@ -16,6 +16,16 @@
 	background-color: white;
 	font-family: 'PT Sans', sans-serif;
 	font-size: 10pt;
+	display: flex;
+	flex-direction: column;
+}
+
+#provisualizer div.svgContainer {
+/*	height: 100%; */
+	box-sizing: border-box; 
+/*	padding-top: 150px;	*/
+	position: relative;
+	flex-grow: 1;
 }
 #provisualizer-help {
 	padding: 0;
@@ -81,6 +91,8 @@
 	}
 }
 
+/* form elements */
+
 /* Override iOS default styling of buttons */
 #provisualizer input[type="submit"],
 #provisualizer input[type="button"],
@@ -88,6 +100,17 @@
   -webkit-appearance: none; /* prefixed property for certain old browsers */
   appearance: none; /* Standard property for other browsers */
 }
+
+#provisualizer label {
+	font-weight: normal;
+}
+
+#provisualizer select {
+	appearance: auto;
+	width: 60%;
+	padding: 1pt;
+}
+
 
 /* command buttons explicitly styled as buttons */
 #provisualizer fieldset.buttons *
@@ -241,14 +264,15 @@
 #provisualizer #toolbar {
 	background-color: white;
 	text-align: center;
-	position: absolute;
+	/*position: absolute;*/
 	left: 0;
 	top: 0;
-	height: 150px;
-	width: 100%;
+/*	height: 150px;
+	width: 100%;*/
 }
 #provisualizer #toolbar h1 {
 	margin: 3px;
+	border: none;
 }
 #provisualizer #toolbar p {
 	margin: 3px;
@@ -257,6 +281,7 @@
 	border: none;
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
 	width: auto;
 	padding: 0.5em;
 	margin: 0;
@@ -267,6 +292,7 @@
 #provisualizer fieldset {
 	border: none;
 /*	border: 2px dotted cyan;*/
+	justify-content: center;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.25em;
