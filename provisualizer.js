@@ -40,8 +40,8 @@ var labelFadeDelay = 10000;
 var toolBar = null;
 var hideLabelsButton;
 addSearchForm();
-var svgContainerDiv = provisualizer.append("div")
-	.attr("class", "svgContainer");
+var visualizationContainerDiv = provisualizer.append("div")
+	.attr("class", "visualizationContainer");
 addSharingTools();
 var fullScreenButton;
 addFullscreenButton();
@@ -116,10 +116,13 @@ var drag = force.drag()
 
 //startLabelFadeTimer();
 var zoomBehavior = d3.behavior.zoom();
-var outerSvg = svgContainerDiv.append("svg")
+var outerSvg = visualizationContainerDiv.append("svg")
+	.attr("class", "visualization")
+	/*
 	.attr("width", "100%")
 	.attr("height", "100%") 
-    		.call(zoomBehavior.on("zoom", zoom));
+	*/
+	.call(zoomBehavior.on("zoom", zoom));
 
 var svg = outerSvg
 		.append("g");
@@ -469,7 +472,7 @@ function addNodeLabel(node, nodes, links) {
 
 function addFullscreenButton() {
 	if (fullscreenEnabled()) {
-		fullScreenButton = provisualizer.append("img")
+		fullScreenButton = visualizationContainerDiv.append("img")
 			.attr("id", "full-screen-button")
 			.attr("src", baseUrl + "fullscreen.png")
 			.attr("alt", "Toggle full screen")
@@ -537,7 +540,7 @@ function showZeroResultsDialog() {
 }
 
 function addSharingTools() {
-		let shareButton = provisualizer.append("img")
+		let shareButton = visualizationContainerDiv.append("img")
 			.attr("id", "share-button")
 			.attr("src", baseUrl + "share.png")
 			.attr("alt", "Share")
@@ -733,12 +736,12 @@ function startLabelFadeTimer() {
 }
 
 function addKey() {
-	var keySvg = svgContainerDiv.append("svg")
+	var keySvg = visualizationContainerDiv.append("svg")
 		.attr("class", "key")
 		.attr("viewBox", "0 0 270 150");
 	keySvg.append("text")
 		.attr("class", "key-heading")
-		.attr("x", "0")
+		.attr("x", "135")
 		.attr("y", "20")
 		.text("Key");
 		
@@ -931,7 +934,7 @@ function addSearchForm() {
 			}
 		);
 	
-	let hideLabelsButton = buttonFieldSet.append("input")
+	hideLabelsButton = buttonFieldSet.append("input")
 		.attr("id", "hide-labels")
 		.attr("type", "submit")
 		.attr("disabled", "disabled")
@@ -1076,7 +1079,10 @@ function getSearchFragment() {
 	
    	function zoomToFit() {
    		var bbox = svg.node().getBBox();
-   		var toolbarHeight = toolBar.node().clientHeight;
+   		//var toolbarHeight = toolBar.node().clientHeight;
+		// TODO don't just set the parent SVG's bounding box = to the bbox;
+		// it should instead be set to a box which tightly encloses the
+		// inner <g> element
    		var svgHeight = svg.node().getBoundingClientRect().height;
    		var viewBox = outerSvg.attr("viewBox");
 		if (viewBox == null) {

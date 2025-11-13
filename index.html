@@ -4,27 +4,29 @@
 <meta charset="utf-8">
 <title>PROVisualizer</title>
 <style type="text/css">
-#provisualizer {
-	margin: 0;
-	height: 100vh; /* Sets height to 100% of the viewport height */
-  	width: 100vw;  /* Sets width to 100% of the viewport width */
-}
-body {
-	padding: 0;
-	margin: 0;
-	background-color: black;
-}
+	.widget-container {
+		padding-left: 30px;
+		padding-right: 30px;
+		min-height: 400px;
+		box-sizing: border-box;
+		/*
+		border-width: 1px;
+		border-color: blue;
+		border-style: solid;
+		*/
+	}
 </style>
 </head>
 <body>
-<div id="provisualizer">
-<div id="embed-search"></div>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<!-- 
-NB the URL below must be an absolute URL pointing to the js file, in the same folder that
-contains the CSV data file
--->
-<script src="provisualizer.js" id="provisualizer-script"></script>
+<h1>Provisualizer demo</h1>
+<p>This page shows a Provisualizer widget embedded in a container div.</p>
+<div class="widget-container">
+	<div id="provisualizer">
+		<div id="embed-search">gold</div>
+		<script src="//d3js.org/d3.v3.min.js"></script>
+		<script src="provisualizer.js" id="provisualizer-script"></script>
+	</div>
 </div>
+<p>This is text of the page which follows the Provisualizer widget.</p>
 </body>
 </html>
