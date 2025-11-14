@@ -550,19 +550,17 @@ function addSharingTools() {
 		let sharingToolbox = createDialog("Share your search", "sharing-toolbox");
 		// <a href="https://www.facebook.com/sharer/sharer.php?u={url}">Share on Facebook</a>
 			
-		var shareList = sharingToolbox.append("ul")
+		var shareList = sharingToolbox.append("div")
 			.attr("class", "ss-share");
 			
 		addTool(shareList, "ico-facebook", "Facebook", shareOnFacebook);
-		addTool(shareList, "ico-twitter", "Twitter", shareOnTwitter);
+		addTool(shareList, "ico-x", "X", shareOnTwitter);
 		addTool(shareList, "ico-email", "Email", shareByEmail);
 		addTool(shareList, "ico-embed","Embed", shareByEmbedding);
 }
 
 function addTool(shareList, cssClass, name, eventHandler) {
-		var item = shareList.append("li")
-			.attr("class", "ss-share-item");
-		item.append("a")
+		shareList.append("a")
 			.attr("class", "ss-share-link " + cssClass)
 			.on("click", eventHandler)
 			.text(name);
@@ -577,7 +575,7 @@ function shareOnFacebook() {
 function shareOnTwitter() {
 	var search = d3.select('#agency-or-function-name-filter').property("value");
 	var tweet = "Visualized '" + search + "' at @PRO_Vic: " + window.location;
-	var URL = "https://twitter.com/home?status=" + encodeURIComponent(tweet);
+	var URL = "https://x.com/intent/tweet?text=" + encodeURIComponent(tweet);
 	console.log(URL);
 	window.open(URL, "Share");
 	closeSharingToolbox();
@@ -599,18 +597,14 @@ function shareByEmbedding() {
 function updateEmbeddingCode() {
 	/*
 	e.g.
-<div id='provisualizer' style='width: 800px; height: 500px; border: 1px solid black;'>
+<div id='provisualizer'>
    <div id='embed-search'>soil</div>
    <script src='https://d3js.org/d3.v3.min.js'></script>
    <script id='provisualizer-script' src='https://prov-data.prov.vic.gov.au/Provisualizer/provisualizer.js'>
    </script>
 </div>
 	*/	
-	var embeddingCode = "<div id='provisualizer' style='width: "
-		+ d3.select("#embedding-width").property("value")
-		+ "; height: "
-		+ d3.select("#embedding-height").property("value")
-		+ "; border: 1px solid black;'>\n"
+	var embeddingCode = "<div id='provisualizer'>\n"
 		+ "   <div id='embed-search'>" + getSearchFragment() + "</div>\n"
 		+ "   <script src='https://d3js.org/d3.v3.min.js'></script>\n"
 		+ "   <script id='provisualizer-script' src='" 
@@ -787,25 +781,6 @@ function addEmbeddingGuide() {
 			var widget = d3.select("#embedding-code");
 			widget.node().setSelectionRange(0, widget.property("value").length);
 		});
-	var dimensions = embeddingGuide.append("div").attr("class", "dimensions");
-	dimensions.append("label")
-		.attr("for", "embedding-width")
-		.text("Width:");
-	dimensions.append("input")
-		.attr("id", "embedding-width")
-		.attr("type", "text")
-		.attr("size", "6")
-		.property("value", "800px")
-		.on("input", updateEmbeddingCode);
-	dimensions.append("label")
-		.attr("for", "embedding-height")
-		.text("Height:");
-	dimensions.append("input")
-		.attr("id", "embedding-height")
-		.attr("type", "text")
-		.attr("size", "6")
-		.property("value", "500px")
-		.on("input", updateEmbeddingCode);
 }
 
 function getSearchTitle() {

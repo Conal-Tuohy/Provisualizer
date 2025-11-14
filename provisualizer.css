@@ -1,12 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=PT+Sans:400,700);
-/*
-#provisualizer *:before, 
-#provisualizer *:after {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-*/
+
 #provisualizer {
 	/*
 	container-type: size;
@@ -231,8 +224,12 @@
 
 #provisualizer dialog {
 	background-color: white;
-	max-width: 80%; 
-	max-height: 80%; 
+	box-sizing: border-box;
+	max-width: 95%; 
+	max-height: 95%; 
+	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
+	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
 
 #provisualizer dialog.help {
@@ -286,19 +283,18 @@
 	overflow:auto;
 }
 #provisualizer .embedding-guide {
+  /*
   width: 36em;
   height: 17em;
   overflow: auto;
   margin: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
+  */
   text-align:center;
   
 	border: 1px solid black;
 	padding: 10px;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
 
 #provisualizer #sharing-toolbox {
@@ -314,9 +310,6 @@
   
 	border: 1px solid black;
 	padding: 10px;
-	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 }
 
 #provisualizer fieldset {
@@ -408,12 +401,22 @@ circle.VA {
 /* Social media links - based on https://github.com/mattberridge/Simple-Social-Sharing-Buttons */
 
 .ss-share {
-padding-left: 0;
-list-style: none; }
-.ss-share-item {
-display: inline-block;
-margin: 0.4em;
+	/*
+	padding-left: 0;
+	list-style: none; 
+	*/
+	width: 100%;
+	display: flex;
+	justify-content:center;
+	flex-wrap: wrap;
+	gap: 1em;
 }
+
+.ss-share-item {
+	display: flex-item;
+/*	margin: 0.4em;*/
+}
+
 .ss-share-link {
 	cursor: pointer;
 /* crude button styles */
@@ -432,11 +435,11 @@ background-size: 20px 20px;
 background-repeat: no-repeat;
 background-position: 10px center; }
 .ico-facebook {
-background-image: url("http://www.facebook.com/favicon.ico"); }
-.ico-twitter {
-background-image: url("http://twitter.com/favicons/favicon.ico"); }
+background-image: url("//www.facebook.com/favicon.ico"); }
+.ico-x {
+background-image: url("//abs.twimg.com/favicons/twitter.3.ico"); }
 .ico-google {
-background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
+background-image: url("//ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
 .ico-email {
 background-image: url("email.png"); 
 }	
