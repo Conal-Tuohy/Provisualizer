@@ -171,9 +171,7 @@
 	border-color: black;
 	padding: 10px;
 	background-color: rgba(255,255,255,0.7);
-	/*width: 270px;
-	height: 150px;*/
-	max-width: min(270px, 30%);
+	max-width: min(270px, 60%);
 	max-height: min(150px, 30%);
 	aspect-ratio: 270 / 150;
 }
