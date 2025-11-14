@@ -8,8 +8,10 @@
 }
 */
 #provisualizer {
+	/*
 	container-type: size;
 	container-name: provisualizer;
+	*/
 	box-sizing: border-box;
 	position: relative;
 	padding: 0;
@@ -28,16 +30,21 @@
 
 /* container for the two SVG images: the key, and the visualisation */
 #provisualizer div.visualizationContainer {
+	container-type: size;
+	container-name: visualizationContainer;
 	position: relative;
 	/*display: flex;
 	justify-content: stretch;
 	*/
 	flex-grow: 1;
+	flex-shrink: 1;
+	height: 100vh;
 	/*
 	border-width: 1px;
 	border-style: solid;
 	border-color: green;
 	*/
+	
 	/*background-color: greenyellow;*/
 }
 
@@ -51,47 +58,9 @@
 	*/
 }
 
-#provisualizer-help {
-	padding: 0;
-	background-color: #f9e53c;
-	font-family: 'PT Sans', sans-serif;
-	font-size: 10pt;
-}
-
-#provisualizer .key {
-	z-index: 100;
-	position: absolute;
-	border-style: solid;
-	border-width: 1px;
-	border-color: black;
-	padding: 10px;
-	background-color: rgba(255,255,255,0.7);
-	/*width: 270px;
-	height: 150px;*/
-	max-width: min(270px, 30%);
-	max-height: min(150px, 30%);
-	aspect-ratio: 270 / 150;
-}
 
 
-#provisualizer .key text.key-heading {
-	fill: black;
-	font-size: 20px;
-	font-weight: bold;
-	text-anchor: middle;
-}
-#provisualizer .key text.key-node-label {
-	fill: black;
-	font-size: 20px;
-	font-weight: normal;
-}
-#provisualizer .key text.key-line-label {
-	fill: black;
-	font-size: 14px;
-	font-weight: normal;
-}
-
-@container provisualizer (orientation: landscape) {
+@container visualizationContainer (orientation: landscape) {
 	/* Styles for landscape orientation */
 
 	/* the key or legend */
@@ -102,7 +71,7 @@
 		margin-left: 2em;
 	}
 }
-@container provisualizer (orientation: portrait) {
+@container visualizationContainer (orientation: portrait) {
 	/* Styles for landscape orientation */
 
 	/* the key or legend */
@@ -112,6 +81,33 @@
 		left: 50%;
   		transform: translateX(-50%); /* Adjusts for the item's own height */
 	}
+}
+
+
+#provisualizer #toolbar {
+	background-color: white;
+	text-align: center;
+	flex-shrink: 0;
+	left: 0;
+	top: 0;
+}
+#provisualizer #toolbar h1 {
+	margin: 1pt;
+	border: none;
+}
+#provisualizer #toolbar p {
+	margin: 1pt;
+}
+#provisualizer form {
+	border: none;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: auto;
+	padding: 0.5em;
+	margin: 0;
+	font-size: 14pt;
+	gap: 0.5em;
 }
 
 /* form elements */
@@ -159,6 +155,47 @@
 #provisualizer select {
 	font-size: 10pt;
 }
+
+#provisualizer-help {
+	padding: 0;
+	background-color: #f9e53c;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 10pt;
+}
+
+#provisualizer .key {
+	z-index: 100;
+	position: absolute;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	padding: 10px;
+	background-color: rgba(255,255,255,0.7);
+	/*width: 270px;
+	height: 150px;*/
+	max-width: min(270px, 30%);
+	max-height: min(150px, 30%);
+	aspect-ratio: 270 / 150;
+}
+
+
+#provisualizer .key text.key-heading {
+	fill: black;
+	font-size: 20px;
+	font-weight: bold;
+	text-anchor: middle;
+}
+#provisualizer .key text.key-node-label {
+	fill: black;
+	font-size: 20px;
+	font-weight: normal;
+}
+#provisualizer .key text.key-line-label {
+	fill: black;
+	font-size: 14px;
+	font-weight: normal;
+}
+
 #share-button {
 	position: absolute;
 	cursor: pointer;
@@ -282,31 +319,6 @@
 	-webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	-moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.35);
 	box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.35);
-}
-
-#provisualizer #toolbar {
-	background-color: white;
-	text-align: center;
-	left: 0;
-	top: 0;
-}
-#provisualizer #toolbar h1 {
-	margin: 1pt;
-	border: none;
-}
-#provisualizer #toolbar p {
-	margin: 1pt;
-}
-#provisualizer form {
-	border: none;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	width: auto;
-	padding: 0.5em;
-	margin: 0;
-	font-size: 14pt;
-	gap: 0.5em;
 }
 
 #provisualizer fieldset {
