@@ -29,7 +29,7 @@ head.append("link")
 	.attr('type', 'text/css')
 	.attr('rel', 'stylesheet');
 		
-var maxLabelLength = 80;
+var maxLabelLength = 50;
 var provisualizer = d3.select("#provisualizer");
 //.append("div")
 //	.attr("style", "position: relative; width: 100%; height: 100%; margin: 0; padding: 0; background-color: white;");
@@ -834,20 +834,22 @@ function addSearchForm() {
 	let searchForm = toolBar.append("form");
 	let inputsFieldSet = searchForm.append("fieldset")
 		.attr("class", "inputs");
+	/*
 	let searchFieldSet = inputsFieldSet.append("fieldset");
+	*/
+	/*
 	let labelSearch = searchFieldSet.append("label")
 		.attr("id", "agency-or-function-name-label")
 		.attr("for", "agency-or-function-name-filter")
 		.text("Enter a keyword:");
-	let textSearch = searchFieldSet.append("input")
+		*/
+	let textSearch = inputsFieldSet.append("input")
 		.attr("id", "agency-or-function-name-filter")
+		.attr("placeholder", "Keywords")
 		.attr("type", "text")
 		.attr("size", "20")
 		.property("value", searchPhrase);
 	let wholeWordsFieldSet = inputsFieldSet.append("fieldset");
-	let wholeWordsLabel = wholeWordsFieldSet.append("label")
-		.attr("for", "whole-words")
-		.text("Whole words");
 	let wholeWordsCheckbox = wholeWordsFieldSet.append("input")
 		.attr("id", "whole-words")
 		.attr("type", "checkbox")
@@ -855,15 +857,22 @@ function addSearchForm() {
 		// JCF would otherwise replace this select element with another one that may or may not work
 		// JCF used on PROV's Drupal-based website.
 		// NB similar problems are always possible on other sites.
+	let wholeWordsLabel = wholeWordsFieldSet.append("label")
+		.attr("for", "whole-words")
+		.text("Whole words");
 	if (wholeWords == "words") {
 		wholeWordsCheckbox.attr("checked", "checked");
 	}
+	/*
 	let functionListFieldSet = inputsFieldSet.append("fieldset");
+	*/
+	/*
 	let functionListLabel = functionListFieldSet.append("label")
 		.attr("id", "function-list-label")
 		.attr("for", "function-list")
 		.text("... or select a function: ");
-	let functionList = functionListFieldSet.append("select")
+	*/
+	let functionList = inputsFieldSet.append("select")
 		.attr("id", "function-list")
 		.attr("class", "default") // defeat "JCF - JavaScript Custom Forms"
 		// JCF would otherwise replace this select element with another one that may or may not work
@@ -875,19 +884,24 @@ function addSearchForm() {
 				// this event is now handled
 				d3.event.preventDefault();
 				textSearch.property("value", functionList.property("value"));
-				functionList.property("value", "(select)");
+				functionList.property("value", "... or select a function");
 				performSearch();
 			}
 		);
+	/*
 	let yearFieldSet = inputsFieldSet.append("fieldset");
+	*/
+	/*
 	let yearLabel = yearFieldSet.append("label")
 		.attr("id", "year-label")
 		.attr("for", "year-filter")
 		.text(" Year:");
-	let yearSearch = yearFieldSet.append("input")
+		*/
+	let yearSearch = inputsFieldSet.append("input")
 		.attr("id", "year-filter")
 		.attr("type", "text")
 		.attr("size", "4")
+		.attr("placeholder", "Year")
 		.attr("maxlength", "4")
 		.property("value", searchYear);
 
@@ -1003,7 +1017,7 @@ function matchesDateFilter(period) {
 function populateFunctionDropDownList() {
 	var functionList = d3.select("#function-list");
 	functionList.append("option")
-		.text("(select)");
+		.text("... or select a function");
 	for(var functionName in uniqueFunctionNames) 
 		functionList.append("option")
 			.text(functionName);
