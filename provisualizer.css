@@ -114,11 +114,13 @@
 
 #provisualizer label {
 	font-weight: normal;
+	margin: 0;
+	margin-right: 0.5em;
 }
 
 #provisualizer select {
 	appearance: auto;
-	padding: 1pt;
+	padding: 4pt;
 	width: 13em; /* just wide enough for "... or select a function" */
 }
 
@@ -318,6 +320,7 @@
 	border: none;
 /*	border: 2px dotted cyan;*/
 	justify-content: center;
+	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.25em;
@@ -326,8 +329,10 @@
 
 #provisualizer input {
 	width: auto;
+	/*
 	margin-left: 5px;
 	margin-right: 5px;
+	*/
 }
 #provisualizer input[type=text]
 {
