@@ -328,6 +328,10 @@
 	padding: 0;
 }
 
+#provisualizer fieldset.inputs {
+	gap: 0.5em;
+}
+
 #provisualizer input {
 	width: auto;
 }
