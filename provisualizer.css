@@ -120,7 +120,6 @@
 
 #provisualizer select {
 	appearance: auto;
-	padding: 4pt;
 	width: 13em; /* just wide enough for "... or select a function" */
 }
 
@@ -148,6 +147,8 @@
 #provisualizer input,
 #provisualizer select {
 	font-size: 10pt;
+	line-height: initial;
+	padding: 2pt;
 }
 
 #provisualizer-help {
@@ -329,14 +330,6 @@
 
 #provisualizer input {
 	width: auto;
-	/*
-	margin-left: 5px;
-	margin-right: 5px;
-	*/
-}
-#provisualizer input[type=text]
-{
-	height: 2em;
 }
 
 #provisualizer td {
