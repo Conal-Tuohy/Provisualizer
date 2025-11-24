@@ -2,7 +2,7 @@
 
 ## Files
 
-To install PROVisualizer, either download the ZIP file from  https://github.com/Conal-Tuohy/Provisualizer/archive/master.zip, unpack it, and upload it to the desired location on the webserver, or use `git` to clone the code to the desired location on the hosting web server e.g. 
+To install PROVisualizer, use `git` to clone the code to the desired location on the hosting web server e.g. 
 
 ```bash
 git clone https://github.com/Conal-Tuohy/Provisualizer.git
