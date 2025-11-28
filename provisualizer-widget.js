@@ -22,9 +22,16 @@ class PROVisualizer extends HTMLElement {
 				<slot></slot>
 			</div>
 		`;
+		this.initialized = false;
 	}
 
 	connectedCallback() {
+		if (this.initialized) {
+			// the widget is alsready initialised, so nothing needs to be done
+			return;
+		}
+		this.initialized = true;
+		
 		// Get the base URL from the script location
 		//const provisualizerScript = document.currentScript.src;
 		var baseUrl = this.getAttribute("base-url");
