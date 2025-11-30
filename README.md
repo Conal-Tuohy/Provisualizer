@@ -35,7 +35,7 @@ To follow the link from a node to the PROV catalogue, click on the textual label
 
 Hover your cursor over a node's circle or textual label to highlight the links from the node to its neighbours.
 
-To embed the visualization in another page, using the sharing tool (button in lower left corner of the visualization) and select the "Embed" button. In the embedding dialog box, specify a width and height (using standard CSS syntax such as `800px` or `90%` etc.), and copy and paste the resulting code into the host web page.
+To embed the visualization in another page, using the sharing tool (button in lower left corner of the visualization) and select the "Embed" button. Copy and paste the HTML from the embedding dialog box into the host web page.
 
 If the user's browser permits full screen mode, a full-screen icon will appear in the lower right corner of the visualization. Clicking the icon will cause the visualization to go full screen, and clicking it again will cause it to return to normal.
 
