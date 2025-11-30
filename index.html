@@ -28,11 +28,10 @@
 <h1>Provisualizer demo</h1>
 <p>This page shows a Provisualizer widget embedded in a container div.</p>
 <div class="widget-container">
-	<div id="provisualizer">
-		<div id="embed-search">gold</div>
-		<script src="//d3js.org/d3.v3.min.js"></script>
-		<script src="provisualizer.js" id="provisualizer-script"></script>
-	</div>
+	<script src="provisualizer-widget.js"></script>
+	<provisualizer-widget base-url="https://prov.conaltuohy.com/Provisualizer/">
+		<div style="display: none" id="embed-search">2989</div>
+	</provisualizer-widget>
 </div>
 <p>This is text of the page which follows the Provisualizer widget.</p>
 </body>
