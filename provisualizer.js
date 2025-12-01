@@ -574,7 +574,7 @@ updateEmbeddingCode() {
 	const embeddingCode = 
 		"<script src='" + this.baseUrl + "provisualizer.js'></script>\n" +
 		"<provisualizer-widget base-url='" + this.baseUrl + "'>\n" +
-		"   <div id='embed-search'>" + this.getSearchFragment() + "</div>\n" +
+		"   <div id='embed-search' style='display: none'>" + this.getSearchFragment() + "</div>\n" +
 		"</provisualizer-widget>";
 	var embeddingCodeWidget = this.provisualizer.select("#embedding-code");
 	embeddingCodeWidget.text(embeddingCode);
